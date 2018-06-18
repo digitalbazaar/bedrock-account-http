@@ -28,7 +28,7 @@
   },
   "peerDependencies": {
     "bedrock": "^1.12.1",
-    "bedrock-account": "digitalbazaar/bedrock-account#implementation",
+    "bedrock-account": "^1.0.0",
     "bedrock-express": "^2.0.8",
     "bedrock-passport": "^3.4.2",
     "bedrock-validation": "^2.4.0"
