@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 0.0.0 - 2018-05-08
+## 1.0.0 - 2018-09-14
 
 ### Added
 - Added core files.
