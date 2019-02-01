@@ -27,12 +27,15 @@
   },
   "peerDependencies": {
     "bedrock": "^1.12.1",
-    "bedrock-account": "^1.0.0",
+    "bedrock-account": "^2.0.0",
     "bedrock-express": "^2.0.8",
-    "bedrock-passport": "^3.4.2",
+    "bedrock-passport": "^4.0.0",
     "bedrock-validation": "^2.4.0"
   },
   "directories": {
     "lib": "./lib"
+  },
+  "devDependencies": {
+    "eslint-config-digitalbazaar": "^1.1.0"
   }
 }
