@@ -5,7 +5,6 @@
 
 const bedrock = require('bedrock');
 const {config} = bedrock;
-const {expect} = chai;
 // apisauce is a wrapper around axios that provides improved error handling
 const {create} = require('apisauce');
 const https = require('https');
@@ -22,14 +21,14 @@ describe('bedrock-account-http  -- get /', function bedrockAccountHttp() {
   it('should return 404 is no email is specified', async function worksGreat() {
     const result = await api.get('/');
     const {status, data} = result;
-    expect(status, 'Expected 404 not found').to.equal(404);
-    expect(data).to.be.an('object');
+    should.equal(status, 404);
+    data.should.be.an('object');
     const {message, type} = data;
-    expect(message).to.match(/account does not exist/i);
-    expect(type).to.match(/NotFoundError/i);
+    message.should.match(/account does not exist/i);
+    type.should.match(/NotFoundError/i);
   });
 
-  it('return an account if the email is found', async function returnAccount(){
+  it.skip('return an account if the email is found', async function returnAccount(){
     const accounts = await brAccount.getAll();
     console.log('accounts', accounts); 
   });
