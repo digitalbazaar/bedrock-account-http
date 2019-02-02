@@ -15,8 +15,8 @@ const api = create({
   httpsAgent: new https.Agent({rejectUnauthorized: false})
 });
 
-describe('bedrock-account-http', () => {
-  it('works great', async () => {
+describe('bedrock-account-http', function bedrockAccountHttp() {
+  it('works great', async function worksGreat() {
     const result = await api.get('/');
     console.log('RRRRRRRR', result);
   });
