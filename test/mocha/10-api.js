@@ -68,8 +68,19 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should return 201 if there is an email', async function() {
       const result = await api.post('/', {email: 'newuser@digitalbazaar.com'});
       result.status.should.equal(201);
-    });
-   
+    });   
   });  
+
+  describe('get /:account', function() {
+    it.skip('should return an account', async function() {
+      const {id} = accounts['alpha@example.com'];
+      const actor = accounts['admin@example.com'];
+      const result = await api.get(`/${id}`,{user: actor});
+    });
+
+    it.skip('should return 404', async function() {
+
+    });
+  });
 
 });
