@@ -82,7 +82,6 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         next();
       });
       const result = await api.get(`/${id}`);
-      console.log('result', result);
     });
 
     it.skip('should return 404', async function() {
