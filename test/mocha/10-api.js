@@ -15,20 +15,22 @@ const mockData = require('../mock.data');
 let actors;
 let accounts;
 let api;
+let stub;
 
 const baseURL =
  `https://${config.server.host}${config['account-http'].routes.basePath}`;
  
 describe('bedrock-account-http', function bedrockAccountHttp() {
     before(async function setup() {
-    await helpers.prepareDatabase(mockData);
-    actors = await helpers.getActors(mockData);
-    accounts = mockData.accounts;
-    api = create({
-      baseURL,
-      httpsAgent: new https.Agent({rejectUnauthorized: false})
+      passportStub.callsFake((req, res, next) => next());
+      await helpers.prepareDatabase(mockData);
+      actors = await helpers.getActors(mockData);
+      accounts = mockData.accounts;
+      api = create({
+        baseURL,
+        httpsAgent: new https.Agent({rejectUnauthorized: false})
+        });
     });
-  });
   describe('get /', function getIndex() {
     it('should return 404 is no email is specified', async function worksGreat() {
       const result = await api.get('/');
@@ -72,10 +74,15 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   });  
 
   describe('get /:account', function() {
-    it.skip('should return an account', async function() {
-      const {id} = accounts['alpha@example.com'];
-      const actor = accounts['admin@example.com'];
-      const result = await api.get(`/${id}`,{user: actor});
+    it('should return an account', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor}; 
+        next();
+      });
+      const result = await api.get(`/${id}`);
+      console.log('result', result);
     });
 
     it.skip('should return 404', async function() {
