@@ -28,6 +28,9 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       httpsAgent: new https.Agent({rejectUnauthorized: false})
     });
   });
+  after(function() {
+    passportStub.restore();
+  });
   describe('get /', function getIndex() {
     it('should return 404 with no email', async function worksGreat() {
       const result = await api.get('/');
