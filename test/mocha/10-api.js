@@ -64,6 +64,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   describe('post /', function() {
     it('should return 400 if there is no email', async function() {
       const result = await api.post('/');
+      console.log('post 400 result', result);
       result.status.should.equal(400);
     });
 
