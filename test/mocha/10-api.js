@@ -17,6 +17,17 @@ let api;
 const baseURL =
  `https://${config.server.host}${config['account-http'].routes.basePath}`;
 
+// simple quick func to check validation errors
+// TODO extend mocha should with this
+function validationError(result, errorMethod, expectedStatus = 400) {
+  result.status.should.equal(expectedStatus);
+  result.data.should.have.property('message');
+  result.data.should.have.property('type');
+  result.data.should.have.property('details');
+  result.data.should.have.property('cause');
+  result.data.message.should.contain(errorMethod);
+}
+
 describe('bedrock-account-http', function bedrockAccountHttp() {
   before(async function setup() {
     passportStub.callsFake((req, res, next) => next());
@@ -34,8 +45,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   describe('get /', function getIndex() {
     it('should return 400 with no email', async function worksGreat() {
       const result = await api.get('/');
-      const {status} = result;
-      should.equal(status, 400);
+      validationError(result, 'get');
     });
 
     it('return 200 if the email is found', async function returnAccount() {
@@ -60,7 +70,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   describe('post /', function() {
     it('should return 400 if there is no email', async function() {
       const result = await api.post('/');
-      result.status.should.equal(400);
+      validationError(result, 'post');
     });
 
     it('should return 201 if there is an email', async function() {
