@@ -18,7 +18,6 @@ const getAccountsQuery = {
   properties: {
     email: schemas.email(),
     exists: {
-      coerceTypes: true,
       type: 'boolean'
     }
   }
