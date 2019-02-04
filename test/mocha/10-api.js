@@ -91,7 +91,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       data.should.have.property('account');
     });
 
-    it('should return 403', async function() {
+    it('should return 403 if actor does not have permission', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       const {account: actor} = accounts['admin@example.com'];
       actor["ACCOUNT_ACCESS"] = false;
@@ -108,7 +108,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       data.should.not.have.property('account');
     });
 
-    it('should return 404', async function() {
+    it('should return 404 if not account for id', async function() {
       const id = "does-not-exist";
       const {account: actor} = accounts['admin@example.com'];
       actor["ACCOUNT_ACCESS"] = true;
