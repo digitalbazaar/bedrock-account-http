@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2018 Digital Bazaar, Inc. All rights reserved.
- */
-/* jshint node: true */
-
 'use strict';
 
 const helpers = require('./helpers');
