@@ -9,6 +9,7 @@ const postAccounts = {
 };
 
 const getAccountsQuery = {
+  title: 'bedrock-accounts-http account exists get',
   required: ['email', 'exists'],
   email,
   exists: {
