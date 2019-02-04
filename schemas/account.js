@@ -1,14 +1,3 @@
-const services = {
-  account: {
-    postAccounts: {
-      required: ['email']
-    },
-    getAccountsQuery: {
-
-    }
-  }
-};
-
 const email = {
   type: 'string'
 };
@@ -19,4 +8,13 @@ const postAccounts = {
   email
 };
 
+const getAccountsQuery = {
+  required: ['email', 'exists'],
+  email,
+  exists: {
+    type: 'boolean'
+  }
+};
+
 module.exports.postAccounts = () => postAccounts;
+module.exports.getAccountsQuery = () => getAccountsQuery;

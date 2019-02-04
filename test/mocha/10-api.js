@@ -32,14 +32,10 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     passportStub.restore();
   });
   describe('get /', function getIndex() {
-    it('should return 404 with no email', async function worksGreat() {
+    it('should return 400 with no email', async function worksGreat() {
       const result = await api.get('/');
-      const {status, data} = result;
-      should.equal(status, 404);
-      data.should.be.an('object');
-      const {message, type} = data;
-      message.should.match(/account does not exist/i);
-      type.should.match(/NotFoundError/i);
+      const {status} = result;
+      should.equal(status, 400);
     });
 
     it('return 200 if the email is found', async function returnAccount() {
@@ -64,7 +60,6 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   describe('post /', function() {
     it('should return 400 if there is no email', async function() {
       const result = await api.post('/');
-      console.log('post 400 result', result);
       result.status.should.equal(400);
     });
 
