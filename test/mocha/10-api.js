@@ -19,7 +19,7 @@ const baseURL =
 
 // simple quick func to check validation errors
 // TODO extend mocha should with this
-function validationError(result, errorMethod, expectedStatus = 400) {
+function validationError(result, errorMethod, expectedError, expectedStatus = 400) {
   result.status.should.equal(expectedStatus);
   result.data.should.have.property('message');
   result.data.should.have.property('type');
@@ -32,6 +32,8 @@ function validationError(result, errorMethod, expectedStatus = 400) {
   details.should.have.property('errors');
   details.errors.should.be.an('array');
   details.errors.length.should.be.gte(0);
+  const testError = details.errors.find(e => expectedError.test(e.message));
+  testError.should.not.be.undefined;
 }
 
 describe('bedrock-account-http', function bedrockAccountHttp() {
@@ -51,7 +53,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   describe('get /', function getIndex() {
     it('should return 400 with no email', async function worksGreat() {
       const result = await api.get('/');
-      validationError(result, 'get');
+      validationError(result, 'get', /email/i);
     });
 
     it('return 200 if the email is found', async function returnAccount() {
@@ -76,7 +78,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   describe('post /', function() {
     it('should return 400 if there is no email', async function() {
       const result = await api.post('/');
-      validationError(result, 'post');
+      validationError(result, 'post', /email/i);
     });
 
     it('should return 201 if there is an email', async function() {
