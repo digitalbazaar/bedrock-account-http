@@ -19,7 +19,10 @@ const baseURL =
 
 // simple quick func to check validation errors
 // TODO extend mocha should with this
-function validationError(result, errorMethod, expectedError, expectedStatus = 400) {
+function validationError(
+  result, errorMethod,
+  expectedError, expectedStatus = 400)
+{
   result.status.should.equal(expectedStatus);
   result.data.should.have.property('message');
   result.data.should.have.property('type');
