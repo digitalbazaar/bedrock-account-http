@@ -23,9 +23,15 @@ function validationError(result, errorMethod, expectedStatus = 400) {
   result.status.should.equal(expectedStatus);
   result.data.should.have.property('message');
   result.data.should.have.property('type');
+  result.data.type.should.match(/ValidationError/i);
   result.data.should.have.property('details');
+  result.data.details.should.be.an('object');
   result.data.should.have.property('cause');
   result.data.message.should.contain(errorMethod);
+  const {details} = result.data;
+  details.should.have.property('errors');
+  details.errors.should.be.an('array');
+  details.errors.length.should.be.gte(0);
 }
 
 describe('bedrock-account-http', function bedrockAccountHttp() {
