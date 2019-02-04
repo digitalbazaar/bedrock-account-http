@@ -4,15 +4,23 @@ const postAccounts = {
   title: 'bedrock-accounts-http account creation post',
   type: 'object',
   required: ['email'],
-  email: schemas.email()
+  additionalProperties: false,
+  properties: {
+    email: schemas.email()
+  }
 };
 
 const getAccountsQuery = {
   title: 'bedrock-accounts-http account exists get',
   required: ['email', 'exists'],
-  email: schemas.email(),
-  exists: {
-    type: 'boolean'
+  additionalProperties: false,
+  type: 'object',
+  properties: {
+    email: schemas.email(),
+    exists: {
+      coerceTypes: true,
+      type: 'boolean'
+    }
   }
 };
 
