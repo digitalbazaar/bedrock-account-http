@@ -62,7 +62,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   });
 
   describe('post /', function() {
-    it.skip('should return 400 if there is no email', async function() {
+    it('should return 400 if there is no email', async function() {
       const result = await api.post('/');
       result.status.should.equal(400);
     });
@@ -71,6 +71,17 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const result = await api.post('/', {email: 'newuser@digitalbazaar.com'});
       result.status.should.equal(201);
     });
+
+    it('should return 201 for accounts with the same email', async function() {
+      const email = {email: 'multiple@digitalbazaar.com'};
+      const result1 = await api.post('/', email);
+      const result2 = await api.post('/', email);
+      const result3 = await api.post('/', email);
+      result1.status.should.equal(201);
+      result2.status.should.equal(201);
+      result3.status.should.equal(201);
+    });
+
   });
 
   describe('get /:account', function() {
