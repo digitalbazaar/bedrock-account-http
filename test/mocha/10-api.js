@@ -36,7 +36,7 @@ function validationError(
   details.errors.should.be.an('array');
   details.errors.length.should.be.gte(0);
   const testError = details.errors.find(e => expectedError.test(e.message));
-  testError.should.not.be.undefined;
+  should.exist(testError);
 }
 
 describe('bedrock-account-http', function bedrockAccountHttp() {
