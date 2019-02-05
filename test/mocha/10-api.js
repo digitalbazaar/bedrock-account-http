@@ -208,5 +208,19 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       data.should.not.have.property('meta');
       data.should.not.have.property('account');
     });
+    it('should paginate', async function() {
+      const email = 'multi@example.com';
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor["ACCOUNT_ACCESS"] = true;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/admin', {email, cursor: Date.now()});
+      result.data.should.be.an('array');
+      result.data.length.should.equal(0);
+    });
+
   });
 });
