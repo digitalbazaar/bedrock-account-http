@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 1.1.0 - 2019-02-05
+## 1.1.0 -
 
 ### Added
 
