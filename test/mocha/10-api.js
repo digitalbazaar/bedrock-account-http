@@ -178,5 +178,35 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         account.email.should.contain(email);
       });
     });
+
+    it('should return 400 invalid', async function() {
+      const email = null;
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor["ACCOUNT_ACCESS"] = true;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/admin', {email});
+      validationError(result, 'accounts', /email/i);
+    });
+
+    it('should return 403 due to permission', async function() {
+      const email = 'admin@example.com';
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor["ACCOUNT_ACCESS"] = false;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/admin', {email});
+      result.status.should.equal(403);
+      const {data} = result;
+      data.should.be.an('object');
+      data.should.not.have.property('meta');
+      data.should.not.have.property('account');
+    });
   });
 });
