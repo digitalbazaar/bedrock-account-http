@@ -39,9 +39,10 @@ accounts[email].meta.sysResourceRole = [{
 // multiple accounts one email
 email = 'multi@example.com';
 accounts[email] = {};
-accounts[email].accounts = [];
 accounts[email].account = helpers.createAccount(email);
-accounts[email].accounts.push(helpers.createAccount(email));
-accounts[email].accounts.push(helpers.createAccount(email));
+accounts[email + 2] = {};
+accounts[email + 2].account = helpers.createAccount(email);
+accounts[email + 3] = {};
+accounts[email + 3].account = helpers.createAccount(email);
 
 //accounts[email].accounts.push(helpers.createAccount(email));

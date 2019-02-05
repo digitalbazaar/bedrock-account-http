@@ -1,6 +1,6 @@
 const {schemas} = require('bedrock-validation');
 
-const postAccounts = {
+const byEmail = {
   title: 'bedrock-accounts-http account creation post',
   type: 'object',
   required: ['email'],
@@ -23,5 +23,5 @@ const getAccountsQuery = {
   }
 };
 
-module.exports.postAccounts = () => postAccounts;
+module.exports.byEmail = () => byEmail;
 module.exports.getAccountsQuery = () => getAccountsQuery;
