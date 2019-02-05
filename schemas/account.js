@@ -13,13 +13,12 @@ const byEmail = {
 const Pagination = {
   title: 'bedrock-accounts-http pagination',
   type: 'object',
-  required: ['email', 'page'],
+  required: ['email'],
   additionalPropeties: false,
   properties: {
     email: schemas.email(),
-    page: 'number',
     cursor: {
-      oneOf: ['string', 'null']
+      type: 'number'
     }
   }
 };
