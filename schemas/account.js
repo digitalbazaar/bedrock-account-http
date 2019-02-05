@@ -10,6 +10,20 @@ const byEmail = {
   }
 };
 
+const Pagination = {
+  title: 'bedrock-accounts-http pagination',
+  type: 'object',
+  required: ['email', 'page'],
+  additionalPropeties: false,
+  properties: {
+    email: schemas.email(),
+    page: 'number',
+    cursor: {
+      oneOf: ['string', 'null']
+    }
+  }
+};
+
 const getAccountsQuery = {
   title: 'bedrock-accounts-http account exists get',
   required: ['email', 'exists'],
@@ -25,3 +39,4 @@ const getAccountsQuery = {
 
 module.exports.byEmail = () => byEmail;
 module.exports.getAccountsQuery = () => getAccountsQuery;
+module.exports.pagination = () => Pagination;
