@@ -14,7 +14,7 @@ const Pagination = {
   title: 'bedrock-accounts-http pagination',
   type: 'object',
   required: ['email'],
-  additionalPropeties: false,
+  additionalProperties: false,
   properties: {
     email: schemas.email(),
     cursor: {

@@ -89,6 +89,12 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       result.status.should.equal(201);
     });
 
+    it('should return 400 if there are to many paramaters', async function() {
+      const result = await api
+        .post('/', {email: 'newuser@digitalbazaar.com', extra: true});
+      validationError(result, 'post', /additional/i);
+    });
+
     it('should return 201 for accounts with the same email', async function() {
       const email = {email: 'multiple@digitalbazaar.com'};
       const result1 = await api.post('/', email);
@@ -181,6 +187,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       account.email.should.contain(value);
       account.email.should.not.contain(email);
     });
+
     it('should fail if there are no patches', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       const {account: actor} = accounts['admin@example.com'];
@@ -192,6 +199,22 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       });
       const result = await api.patch(`/${id}`, {sequence: 10, patch: []});
       validationError(result, 'update', /items/i);
+    });
+
+    it('should fail if there are extra paramaters', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      actor["ACCOUNT_UPDATE"] = true;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const value = "fail@extras.org";
+      const patch = [{op: 'replace', path: '/email', value}];
+      const result = await api
+        .patch(`/${id}`, {sequence: 10, patch, extra: true});
+      validationError(result, 'update', /additional/i);
     });
 
     it('should fail if there is no sequence', async function() {
@@ -247,6 +270,19 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       });
       const result = await api.get('/admin', {email});
       validationError(result, 'accounts', /email/i);
+    });
+
+    it('should fail if there are extra parameters', async function() {
+      const email = 'tomany@params.org';
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor["ACCOUNT_ACCESS"] = true;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/admin', {email, extra: true});
+      validationError(result, 'accounts', /additional/i);
     });
 
     it('should return 403 due to permission', async function() {
