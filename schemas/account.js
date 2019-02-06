@@ -45,3 +45,4 @@ const getAccountsQuery = {
 module.exports.byEmail = () => byEmail;
 module.exports.getAccountsQuery = () => getAccountsQuery;
 module.exports.pagination = () => Pagination;
+module.exports.getAccountsQuery = () => getAccountsQuery;

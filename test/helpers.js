@@ -21,30 +21,13 @@ api.createAccount = email => {
   return newAccount;
 };
 
-api.createIdentity = userName => {
-  const newIdentity = {
-    id: 'did:test:' + userName,
-    label: userName,
-    email: userName + '@bedrock.dev',
-    url: 'https://example.com',
-    description: userName
-  };
-  return newIdentity;
-};
-
-api.getActors = async mockData => {
-  const actors = {};
-  for(const [key, record] of Object.entries(mockData.accounts)) {
-    actors[key] = await brAccount.getCapabilities({id: record.account.id});
-  }
-  return actors;
-};
-
+//called in test before hook
 api.prepareDatabase = async mockData => {
   await api.removeCollections();
   await insertTestData(mockData);
 };
 
+// called by prepareDatabase
 api.removeCollections = async (collectionNames = ['account', 'identity']) => {
   await promisify(database.openCollections)(collectionNames);
   for(const collectionName of collectionNames) {
@@ -55,6 +38,7 @@ api.removeCollections = async (collectionNames = ['account', 'identity']) => {
 api.removeCollection =
   async collectionName => api.removeCollections([collectionName]);
 
+// called by prepareDatabase
 async function insertTestData(mockData) {
   const records = Object.values(mockData.accounts);
   for(const record of records) {

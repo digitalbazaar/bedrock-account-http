@@ -21,7 +21,8 @@ const baseURL =
 // TODO extend mocha should with this
 function validationError(
   result, errorMethod,
-  expectedError, expectedStatus = 400)
+  expectedError, expectedStatus = 400
+)
 {
   result.status.should.equal(expectedStatus);
   result.data.should.have.property('message');
@@ -43,7 +44,6 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   before(async function setup() {
     passportStub.callsFake((req, res, next) => next());
     await helpers.prepareDatabase(mockData);
-    await helpers.getActors(mockData);
     accounts = mockData.accounts;
     api = create({
       baseURL,

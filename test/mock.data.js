@@ -44,5 +44,3 @@ accounts[email + 2] = {};
 accounts[email + 2].account = helpers.createAccount(email);
 accounts[email + 3] = {};
 accounts[email + 3].account = helpers.createAccount(email);
-
-//accounts[email].accounts.push(helpers.createAccount(email));
