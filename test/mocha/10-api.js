@@ -168,7 +168,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       });
       const value = 'updated@tester.org';
       const patch = [{op: 'replace', path: '/email', value}];
-      const patchResult = await api.patch(`/${id}`, {sequence: 0, patch, id});
+      const patchResult = await api.patch(`/${id}`, {sequence: 0, patch});
       patchResult.status.should.equal(200);
       const getResult = await api.get(`/${id}`);
       getResult.status.should.equal(200);
@@ -190,8 +190,23 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         req.user = {actor};
         next();
       });
-      const result = await api.patch(`/${id}`, {sequence: 10, patch: [], id});
+      const result = await api.patch(`/${id}`, {sequence: 10, patch: []});
       validationError(result, 'update', /items/i);
+    });
+
+    it('should fail if there is no sequence', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      actor["ACCOUNT_UPDATE"] = true;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const value = 'updated@tester.org';
+      const patch = [{op: 'replace', path: '/email', value}];
+      const result = await api.patch(`/${id}`, {patch});
+      validationError(result, 'update', /sequence/i);
     });
 
   });

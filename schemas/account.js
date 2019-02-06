@@ -31,14 +31,10 @@ const Pagination = {
 
 const Update = {
   title: 'bedrock-accounts-http account update',
-  required: ['id', 'patch', 'sequence'],
+  required: ['patch', 'sequence'],
   type: 'object',
-  additionalPropeties: false,
+  additionalProperties: false,
   properties: {
-    id: {
-      type: 'string',
-      minLength: 0
-    },
     patch: schemas.jsonPatch(),
     sequence: {
       type: 'number',
