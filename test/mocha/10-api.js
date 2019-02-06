@@ -154,6 +154,48 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
   });
 
+  describe('patch /:account', function() {
+    it('should update an account', async function() {
+      this.timeout(60000);
+      const email = 'alpha@example.com';
+      const {account: {id}} = accounts[email];
+      const {account: actor} = accounts['admin@example.com'];
+      actor["ACCOUNT_UPDATE"] = true;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const value = 'updated@tester.org';
+      const patch = [{op: 'replace', path: '/email', value}];
+      const patchResult = await api.patch(`/${id}`, {sequence: 0, patch, id});
+      patchResult.status.should.equal(200);
+      const getResult = await api.get(`/${id}`);
+      getResult.status.should.equal(200);
+      const {data} = getResult;
+      data.should.be.an('object');
+      data.should.have.property('meta');
+      data.should.have.property('account');
+      const {account} = data;
+      account.should.have.property('email');
+      account.email.should.contain(value);
+      account.email.should.not.contain(email);
+    });
+    it('should fail if there are no patches', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      actor["ACCOUNT_UPDATE"] = true;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.patch(`/${id}`, {sequence: 10, patch: [], id});
+      validationError(result, 'update', /items/i);
+    });
+
+  });
+
   describe('get /admin', function() {
     it('should return 3 accounts', async function() {
       const email = 'multi@example.com';
@@ -221,6 +263,5 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       result.data.should.be.an('array');
       result.data.length.should.equal(0);
     });
-
   });
 });

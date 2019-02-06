@@ -29,6 +29,24 @@ const Pagination = {
   }
 };
 
+const Update = {
+  title: 'bedrock-accounts-http account update',
+  required: ['id', 'patch', 'sequence'],
+  type: 'object',
+  additionalPropeties: false,
+  properties: {
+    id: {
+      type: 'string',
+      minLength: 0
+    },
+    patch: schemas.jsonPatch(),
+    sequence: {
+      type: 'number',
+      minimum: 0
+    }
+  }
+};
+
 const getAccountsQuery = {
   title: 'bedrock-accounts-http account exists get',
   required: ['email', 'exists'],
@@ -46,3 +64,4 @@ module.exports.byEmail = () => byEmail;
 module.exports.getAccountsQuery = () => getAccountsQuery;
 module.exports.pagination = () => Pagination;
 module.exports.getAccountsQuery = () => getAccountsQuery;
+module.exports.update = () => Update;
