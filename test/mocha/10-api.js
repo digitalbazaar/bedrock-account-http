@@ -43,7 +43,6 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   before(async function setup() {
     passportStub.callsFake((req, res, next) => next());
     await helpers.prepareDatabase(mockData);
-    await helpers.getActors(mockData);
     accounts = mockData.accounts;
     api = create({
       baseURL,
