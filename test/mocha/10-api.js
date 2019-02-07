@@ -197,6 +197,23 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const result = await api.patch(`/${id}/status`);
       validationError(result, 'patch', /status/i);
     });
-
+  });
+  describe('get /:account/caps', function() {
+    it('should return an account', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const result = await api.get(`/${id}/caps`);
+      result.status.should.equal(200);
+      const {data} = result;
+      data.should.be.an('object');
+      data.should.have.property('id');
+      data.should.have.property('sysResourceRole');
+      data.sysResourceRole.should.be.an('array');
+      data.sysResourceRole.forEach(role => {
+        role.should.have.property('sysRole');
+        role.sysRole.should.be.an('string');
+        role.should.have.property('resource');
+        role.resource.should.be.an('array');
+      });
+    });
   });
 });
