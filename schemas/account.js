@@ -18,8 +18,8 @@ const pagination = {
   properties: {
     email: schemas.email(),
     cursor: {
-      type: 'number',
-      minimum: 0
+      type: 'string',
+      minLength: 0
     },
     limit: {
       type: 'number',

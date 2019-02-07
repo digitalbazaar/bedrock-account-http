@@ -309,9 +309,15 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         req.user = {actor};
         next();
       });
-      const result = await api.get('/admin', {email, cursor: Date.now()});
+      const result = await api.get('/admin', {email});
       result.data.should.be.an('array');
-      result.data.length.should.equal(0);
+      const {data} = result;
+      data.length.should.equal(3);
+      const mid = data[data.length - 2];
+      const {account: {id}} = mid;
+      const nextResults = await api.get('/admin', {email, cursor: id});
+      nextResults.data.should.be.an('array');
+      nextResults.data.length.should.equal(1);
     });
   });
 });
