@@ -31,9 +31,7 @@ const setStatus = {
   properties: {
     status: {
       type: 'string',
-      pattern: '^(active|deleted)$',
-      minLength: 6,
-      maxLength: 7
+      enum: ['active', 'deleted']
     }
   }
 };
