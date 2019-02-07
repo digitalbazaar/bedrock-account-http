@@ -1,6 +1,6 @@
 const {schemas} = require('bedrock-validation');
 
-const byEmail = {
+const create = {
   title: 'bedrock-accounts-http account creation post',
   type: 'object',
   required: ['email'],
@@ -10,7 +10,7 @@ const byEmail = {
   }
 };
 
-const Pagination = {
+const pagination = {
   title: 'bedrock-accounts-http pagination',
   type: 'object',
   required: ['email'],
@@ -56,8 +56,8 @@ const getAccountsQuery = {
   }
 };
 
-module.exports.byEmail = () => byEmail;
+module.exports.create = () => create;
 module.exports.getAccountsQuery = () => getAccountsQuery;
-module.exports.pagination = () => Pagination;
+module.exports.pagination = () => pagination;
 module.exports.getAccountsQuery = () => getAccountsQuery;
 module.exports.update = () => Update;
