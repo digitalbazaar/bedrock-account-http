@@ -164,7 +164,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       });
       const status = 'deleted';
       const result = await api.patch(`/${id}/status`, {status});
-      result.status.should.equal(200);
+      result.status.should.equal(204);
       const nextResult = await api.get(`/${id}`);
       nextResult.data.should.have.property('meta');
       nextResult.data.meta.should.have.property('status');
