@@ -23,5 +23,20 @@ const getAccountsQuery = {
   }
 };
 
+const setStatus = {
+  title: 'bedrock-accounts-http patch set status',
+  required: ['status'],
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    status: {
+      type: 'string',
+      minLength: 6,
+      maxLength: 7
+    }
+  }
+};
+
 module.exports.postAccounts = () => postAccounts;
 module.exports.getAccountsQuery = () => getAccountsQuery;
+module.exports.setStatus = () => setStatus;
