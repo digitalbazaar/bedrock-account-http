@@ -258,6 +258,31 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       });
     });
 
+    it('should return 2 accounts', async function() {
+      const email = 'multi@example.com';
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor['ACCOUNT_ACCESS'] = true;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/admin', {email, limit: 2});
+      console.log(result.data.details);
+      result.data.should.be.an('array');
+      const {data} = result;
+      data.length.should.equal(2);
+      data.forEach(entry => {
+        entry.should.be.an('object');
+        entry.should.have.property('account');
+        entry.should.have.property('meta');
+        const {account} = entry;
+        account.should.have.property('id');
+        account.should.have.property('email');
+        account.email.should.contain(email);
+      });
+    });
+
     it('should return 400 invalid', async function() {
       const email = null;
       const {account: actor} = accounts['admin@example.com'];

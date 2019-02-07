@@ -23,7 +23,7 @@ const pagination = {
     },
     limit: {
       type: 'number',
-      minimum: 10,
+      minimum: 1,
       maximum: 1000
     }
   }
