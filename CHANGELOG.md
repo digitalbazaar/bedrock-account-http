@@ -1,5 +1,12 @@
 # bedrock-account-http ChangeLog
 
+## 1.2.0 -
+
+### Added
+
+- Api endpoint to get an account's capabilities.
+- Api endpoint to change an account's status.
+
 ## 1.1.0 -
 
 ### Added
