@@ -163,7 +163,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         next();
       });
       const status = 'deleted';
-      const result = await api.patch(`/${id}/status`, {status});
+      const result = await api.post(`/${id}/status`, {status});
       result.status.should.equal(204);
       const nextResult = await api.get(`/${id}`);
       nextResult.data.should.have.property('meta');
@@ -181,7 +181,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         next();
       });
       const status = 'deleted';
-      const result = await api.patch(`/${id}/status`, {status});
+      const result = await api.post(`/${id}/status`, {status});
       result.status.should.equal(403);
     });
 
@@ -194,14 +194,14 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         req.user = {actor};
         next();
       });
-      const result = await api.patch(`/${id}/status`);
+      const result = await api.post(`/${id}/status`);
       validationError(result, 'patch', /status/i);
     });
   });
-  describe('get /:account/caps', function() {
+  describe('get /:account/roles', function() {
     it('should return an account', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
-      const result = await api.get(`/${id}/caps`);
+      const result = await api.get(`/${id}/roles`);
       result.status.should.equal(200);
       const {data} = result;
       data.should.be.an('object');
