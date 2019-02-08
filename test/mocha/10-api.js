@@ -104,7 +104,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should return an account', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       const {account: actor} = accounts['admin@example.com'];
-      actor['ACCOUNT_ACCESS'] = true;
+      actor.ACCOUNT_ACCESS = true;
       delete actor.id;
       passportStub.callsFake((req, res, next) => {
         req.user = {actor};
@@ -121,7 +121,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should return 403 if actor does not have permission', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       const {account: actor} = accounts['admin@example.com'];
-      actor['ACCOUNT_ACCESS'] = false;
+      actor.ACCOUNT_ACCESS = false;
       delete actor.id;
       passportStub.callsFake((req, res, next) => {
         req.user = {actor};
@@ -138,7 +138,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should return 404 if not account for id', async function() {
       const id = 'does-not-exist';
       const {account: actor} = accounts['admin@example.com'];
-      actor['ACCOUNT_ACCESS'] = true;
+      actor.ACCOUNT_ACCESS = true;
       delete actor.id;
       passportStub.callsFake((req, res, next) => {
         req.user = {actor};
@@ -156,7 +156,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should change the status to deleted', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       const {account: actor} = accounts['admin@example.com'];
-      actor['ACCOUNT_META_UPDATE'] = true;
+      actor.ACCOUNT_META_UPDATE = true;
       delete actor.id;
       passportStub.callsFake((req, res, next) => {
         req.user = {actor};
@@ -174,7 +174,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should return 403', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       const {account: actor} = accounts['admin@example.com'];
-      actor['ACCOUNT_META_UPDATE'] = false;
+      actor.ACCOUNT_META_UPDATE = false;
       delete actor.id;
       passportStub.callsFake((req, res, next) => {
         req.user = {actor};
@@ -188,7 +188,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should return 400', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       const {account: actor} = accounts['admin@example.com'];
-      actor['ACCOUNT_META_UPDATE'] = false;
+      actor.ACCOUNT_META_UPDATE = false;
       delete actor.id;
       passportStub.callsFake((req, res, next) => {
         req.user = {actor};
