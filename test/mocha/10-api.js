@@ -15,7 +15,8 @@ const mockData = require('../mock.data');
 const Emails = {
   admin: 'admin@example.com',
   alpha: 'alpha@example.com',
-  multi: 'multi@example.com'
+  multi: 'multi@example.com',
+  updated: 'will-be-updated@example.com'
 };
 
 let accounts;
@@ -47,6 +48,8 @@ function validationError(
   should.exist(testError);
 }
 
+passportStub.callsFake((req, res, next) => next());
+
 function stubPassportStub(email) {
   passportStub.callsFake((req, res, next) => {
     req.user = {
@@ -59,7 +62,6 @@ function stubPassportStub(email) {
 
 describe('bedrock-account-http', function bedrockAccountHttp() {
   before(async function setup() {
-    passportStub.callsFake((req, res, next) => next());
     await helpers.prepareDatabase(mockData);
     actors = await helpers.getActors(mockData);
     accounts = mockData.accounts;
@@ -68,8 +70,9 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       httpsAgent: new https.Agent({rejectUnauthorized: false})
     });
   });
-  after(function() {
+  after(async function() {
     passportStub.restore();
+    await helpers.removeCollections();
   });
 
   describe('post /', function() {
@@ -178,13 +181,13 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   });
 
   describe('patch /:account', function() {
+
     it('should update an account', async function() {
-      const email = 'alpha@example.com';
-      const {account: {id}} = accounts[email];
+      const {account: {id}} = accounts[Emails.updated];
       stubPassportStub(Emails.admin);
       const value = 'updated@tester.org';
       const patch = [{op: 'replace', path: '/email', value}];
-      const patchResult = await api.patch(`/${id}`, {sequence: 1, patch});
+      const patchResult = await api.patch(`/${id}`, {sequence: 0, patch});
       patchResult.status.should.equal(204);
       const getResult = await api.get(`/${id}`);
       getResult.status.should.equal(200);
@@ -195,7 +198,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const {account} = data;
       account.should.have.property('email');
       account.email.should.contain(value);
-      account.email.should.not.contain(email);
+      account.email.should.not.contain(Emails.updated);
     });
 
     it('should fail if there are no patches', async function() {
