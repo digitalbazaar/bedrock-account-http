@@ -21,6 +21,15 @@ api.createAccount = email => {
   return newAccount;
 };
 
+//called in before
+api.getActors = async mockData => {
+  const actors = {};
+  for(const [key, record] of Object.entries(mockData.accounts)) {
+    actors[key] = await brAccount.getCapabilities({id: record.account.id});
+  }
+  return actors;
+};
+
 //called in test before hook
 api.prepareDatabase = async mockData => {
   await api.removeCollections();
