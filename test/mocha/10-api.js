@@ -104,7 +104,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should return an account', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       const {account: actor} = accounts['admin@example.com'];
-      actor["ACCOUNT_ACCESS"] = true;
+      actor.ACCOUNT_ACCESS = true;
       delete actor.id;
       passportStub.callsFake((req, res, next) => {
         req.user = {actor};
@@ -121,7 +121,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should return 403 if actor does not have permission', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       const {account: actor} = accounts['admin@example.com'];
-      actor["ACCOUNT_ACCESS"] = false;
+      actor.ACCOUNT_ACCESS = false;
       delete actor.id;
       passportStub.callsFake((req, res, next) => {
         req.user = {actor};
@@ -136,9 +136,9 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
 
     it('should return 404 if not account for id', async function() {
-      const id = "does-not-exist";
+      const id = 'does-not-exist';
       const {account: actor} = accounts['admin@example.com'];
-      actor["ACCOUNT_ACCESS"] = true;
+      actor.ACCOUNT_ACCESS = true;
       delete actor.id;
       passportStub.callsFake((req, res, next) => {
         req.user = {actor};
@@ -152,5 +152,68 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       data.should.not.have.property('account');
     });
   });
+  describe('patch /:account/status', function() {
+    it('should change the status to deleted', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      actor.ACCOUNT_META_UPDATE = true;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const status = 'deleted';
+      const result = await api.post(`/${id}/status`, {status});
+      result.status.should.equal(204);
+      const nextResult = await api.get(`/${id}`);
+      nextResult.data.should.have.property('meta');
+      nextResult.data.meta.should.have.property('status');
+      nextResult.data.meta.status.should.contain(status);
+    });
 
+    it('should return 403', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      actor.ACCOUNT_META_UPDATE = false;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const status = 'deleted';
+      const result = await api.post(`/${id}/status`, {status});
+      result.status.should.equal(403);
+    });
+
+    it('should return 400', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      actor.ACCOUNT_META_UPDATE = false;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.post(`/${id}/status`);
+      validationError(result, 'patch', /status/i);
+    });
+  });
+  describe('get /:account/roles', function() {
+    it('should return an account', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const result = await api.get(`/${id}/roles`);
+      result.status.should.equal(200);
+      const {data} = result;
+      data.should.be.an('object');
+      data.should.have.property('id');
+      data.should.have.property('sysResourceRole');
+      data.sysResourceRole.should.be.an('array');
+      data.sysResourceRole.forEach(role => {
+        role.should.have.property('sysRole');
+        role.sysRole.should.be.an('string');
+        role.should.have.property('resource');
+        role.resource.should.be.an('array');
+      });
+    });
+  });
 });
