@@ -35,3 +35,12 @@ accounts[email].meta = {};
 accounts[email].meta.sysResourceRole = [{
   sysRole: 'bedrock-account.admin'
 }];
+
+// multiple accounts one email
+email = 'multi@example.com';
+accounts[email] = {};
+accounts[email].account = helpers.createAccount(email);
+accounts[email + 2] = {};
+accounts[email + 2].account = helpers.createAccount(email);
+accounts[email + 3] = {};
+accounts[email + 3].account = helpers.createAccount(email);

@@ -6,6 +6,9 @@
 
 - Api endpoint to get an account's capabilities.
 - Api endpoint to change an account's status.
+- Route for admins to get all accounts associated with an email.
+- Route to change an account using json patches.
+- More Tests added to the project for all implemented routes.
 
 ## 1.1.0 -
 

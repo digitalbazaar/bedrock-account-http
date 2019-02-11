@@ -6,9 +6,6 @@
 const {config} = require('bedrock');
 const path = require('path');
 
-const {permissions} = config.permission;
-const {roles} = config.permission;
-
 config.mocha.tests.push(path.join(__dirname, 'mocha'));
 
 // MongoDB
