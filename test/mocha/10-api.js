@@ -1,6 +1,7 @@
 /*!
  * Copyright (c) 2019 Digital Bazaar, Inc. All rights reserved.
  */
+
 'use strict';
 
 const bedrock = require('bedrock');
@@ -51,30 +52,6 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   });
   after(function() {
     passportStub.restore();
-  });
-  describe('get /', function getIndex() {
-    it('should return 400 with no email', async function worksGreat() {
-      const result = await api.get('/');
-      validationError(result, 'get', /email/i);
-    });
-
-    it('return 200 if the email is found', async function returnAccount() {
-      const email = 'alpha@example.com';
-      const result = await api.get('/', {exists: true, email});
-      const {status} = result;
-      should.equal(status, 200);
-    });
-
-    it('return 404 if the email is not found', async function returnAccount() {
-      const email = 'not-found@example.com';
-      const result = await api.get('/', {exists: true, email});
-      const {status, data} = result;
-      should.equal(status, 404);
-      data.should.be.an('object');
-      const {message, type} = data;
-      message.should.match(/account does not exist/i);
-      type.should.match(/NotFoundError/i);
-    });
   });
 
   describe('post /', function() {
@@ -214,6 +191,214 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         role.should.have.property('resource');
         role.resource.should.be.an('array');
       });
+    });
+  });
+
+  describe('patch /:account', function() {
+    it('should update an account', async function() {
+      const email = 'alpha@example.com';
+      const {account: {id}} = accounts[email];
+      const {account: actor} = accounts['admin@example.com'];
+      actor.ACCOUNT_UPDATE = true;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const value = 'updated@tester.org';
+      const patch = [{op: 'replace', path: '/email', value}];
+      const patchResult = await api.patch(`/${id}`, {sequence: 1, patch});
+      patchResult.status.should.equal(204);
+      const getResult = await api.get(`/${id}`);
+      getResult.status.should.equal(200);
+      const {data} = getResult;
+      data.should.be.an('object');
+      data.should.have.property('meta');
+      data.should.have.property('account');
+      const {account} = data;
+      account.should.have.property('email');
+      account.email.should.contain(value);
+      account.email.should.not.contain(email);
+    });
+
+    it('should fail if there are no patches', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      actor.ACCOUNT_UPDATE = true;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.patch(`/${id}`, {sequence: 10, patch: []});
+      validationError(result, 'update', /items/i);
+    });
+
+    it('should fail if there are extra paramaters', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      actor.ACCOUNT_UPDATE = true;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const value = 'fail@extras.org';
+      const patch = [{op: 'replace', path: '/email', value}];
+      const result = await api
+        .patch(`/${id}`, {sequence: 10, patch, extra: true});
+      validationError(result, 'update', /additional/i);
+    });
+
+    it('should fail if there is no sequence', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: actor} = accounts['admin@example.com'];
+      actor.ACCOUNT_UPDATE = true;
+      delete actor.id;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const value = 'updated@tester.org';
+      const patch = [{op: 'replace', path: '/email', value}];
+      const result = await api.patch(`/${id}`, {patch});
+      validationError(result, 'update', /sequence/i);
+    });
+  });
+
+  describe('get /', function getIndex() {
+    it('should return 400 with no email', async function worksGreat() {
+      const result = await api.get('/');
+      validationError(result, 'get', /email/i);
+    });
+
+    it('return 200 if the email is found', async function returnAccount() {
+      const email = 'admin@example.com';
+      const result = await api.get('/', {exists: true, email});
+      const {status} = result;
+      should.equal(status, 200);
+    });
+
+    it('return 404 if the email is not found', async function returnAccount() {
+      const email = 'not-found@example.com';
+      const result = await api.get('/', {exists: true, email});
+      const {status, data} = result;
+      should.equal(status, 404);
+      data.should.be.an('object');
+      const {message, type} = data;
+      message.should.match(/account does not exist/i);
+      type.should.match(/NotFoundError/i);
+    });
+
+    it('should return 3 accounts', async function() {
+      const email = 'multi@example.com';
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor.ACCOUNT_ACCESS = true;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/', {email});
+      result.data.should.be.an('array');
+      const {data} = result;
+      data.length.should.equal(3);
+      data.forEach(entry => {
+        entry.should.be.an('object');
+        entry.should.have.property('account');
+        entry.should.have.property('meta');
+        const {account} = entry;
+        account.should.have.property('id');
+        account.should.have.property('email');
+        account.email.should.contain(email);
+      });
+    });
+
+    it('should return 2 accounts', async function() {
+      const email = 'multi@example.com';
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor.ACCOUNT_ACCESS = true;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/', {email, limit: 2});
+      console.log(result.data.details);
+      result.data.should.be.an('array');
+      const {data} = result;
+      data.length.should.equal(2);
+      data.forEach(entry => {
+        entry.should.be.an('object');
+        entry.should.have.property('account');
+        entry.should.have.property('meta');
+        const {account} = entry;
+        account.should.have.property('id');
+        account.should.have.property('email');
+        account.email.should.contain(email);
+      });
+    });
+
+    it('should return 400 invalid', async function() {
+      const email = null;
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor.ACCOUNT_ACCESS = true;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/', {email});
+      validationError(result, 'accounts', /email/i);
+    });
+
+    it('should fail if there are extra parameters', async function() {
+      const email = 'tomany@params.org';
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor.ACCOUNT_ACCESS = true;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/', {email, extra: true});
+      validationError(result, 'accounts', /additional/i);
+    });
+
+    it('should return 403 due to permission', async function() {
+      const email = 'admin@example.com';
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor.ACCOUNT_ACCESS = false;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/', {email});
+      result.status.should.equal(403);
+      const {data} = result;
+      data.should.be.an('object');
+      data.should.not.have.property('meta');
+      data.should.not.have.property('account');
+    });
+    it('should paginate', async function() {
+      const email = 'multi@example.com';
+      const {account: actor} = accounts['admin@example.com'];
+      delete actor.id;
+      actor.ACCOUNT_ACCESS = true;
+      passportStub.callsFake((req, res, next) => {
+        req.user = {actor};
+        next();
+      });
+      const result = await api.get('/', {email});
+      result.data.should.be.an('array');
+      const {data} = result;
+      data.length.should.equal(3);
+      const mid = data[data.length - 2];
+      const {account: {id}} = mid;
+      const nextResults = await api.get('/', {email, after: id});
+      nextResults.data.should.be.an('array');
+      nextResults.data.length.should.equal(1);
     });
   });
 });
