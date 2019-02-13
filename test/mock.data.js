@@ -8,7 +8,7 @@ module.exports = data;
 const accounts = data.accounts = {};
 let email;
 
-email = 'will-be-deleted@example.com';
+email = 'will-be-updated@example.com';
 accounts[email] = {};
 accounts[email].account = helpers.createAccount(email);
 accounts[email].meta = {};
