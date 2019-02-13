@@ -146,6 +146,18 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       nextResult.data.meta.status.should.contain(status);
     });
 
+    it('should change the status to disabled', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      stubPassportStub(Emails.admin);
+      const status = 'disabled';
+      const result = await api.post(`/${id}/status`, {status});
+      result.status.should.equal(204);
+      const nextResult = await api.get(`/${id}`);
+      nextResult.data.should.have.property('meta');
+      nextResult.data.meta.should.have.property('status');
+      nextResult.data.meta.status.should.contain(status);
+    });
+
     it('should return 403', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       stubPassportStub(Emails.multi);
