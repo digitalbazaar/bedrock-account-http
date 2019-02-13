@@ -40,7 +40,7 @@ const setStatus = {
   properties: {
     status: {
       type: 'string',
-      enum: ['active', 'deleted']
+      enum: ['active', 'disabled', 'deleted']
     }
   }
 };
