@@ -32,7 +32,7 @@
     "bedrock-account": "^2.0.0",
     "bedrock-express": "^2.0.8",
     "bedrock-passport": "^4.0.0",
-    "bedrock-validation": "^2.4.0"
+    "bedrock-validation": "^4.1.0"
   },
   "directories": {
     "lib": "./lib"
