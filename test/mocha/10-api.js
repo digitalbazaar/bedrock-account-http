@@ -133,7 +133,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
   });
 
-  describe('patch /:account/status', function() {
+  describe('post /:account/status', function() {
     it('should change the status to deleted', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       stubPassportStub(Emails.admin);
@@ -143,7 +143,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const nextResult = await api.get(`/${id}`);
       nextResult.data.should.have.property('meta');
       nextResult.data.meta.should.have.property('status');
-      nextResult.data.meta.status.should.contain(status);
+      nextResult.data.meta.status.should.equal(status);
     });
 
     it('should change the status to disabled', async function() {
@@ -155,7 +155,19 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const nextResult = await api.get(`/${id}`);
       nextResult.data.should.have.property('meta');
       nextResult.data.meta.should.have.property('status');
-      nextResult.data.meta.status.should.contain(status);
+      nextResult.data.meta.status.should.equal(status);
+    });
+
+    it('should change the status to active', async function() {
+      const {account: {id}} = accounts['alpha@example.com'];
+      stubPassportStub(Emails.admin);
+      const status = 'active';
+      const result = await api.post(`/${id}/status`, {status});
+      result.status.should.equal(204);
+      const nextResult = await api.get(`/${id}`);
+      nextResult.data.should.have.property('meta');
+      nextResult.data.meta.should.have.property('status');
+      nextResult.data.meta.status.should.equal(status);
     });
 
     it('should return 403', async function() {
@@ -209,7 +221,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       data.should.have.property('account');
       const {account} = data;
       account.should.have.property('email');
-      account.email.should.contain(value);
+      account.email.should.equal(value);
       account.email.should.not.contain(Emails.updated);
     });
 
@@ -278,7 +290,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         const {account} = entry;
         account.should.have.property('id');
         account.should.have.property('email');
-        account.email.should.contain(email);
+        account.email.should.equal(email);
       });
     });
 
@@ -296,7 +308,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         const {account} = entry;
         account.should.have.property('id');
         account.should.have.property('email');
-        account.email.should.contain(email);
+        account.email.should.equal(email);
       });
     });
 
