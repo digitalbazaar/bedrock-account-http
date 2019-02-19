@@ -39,7 +39,6 @@
     "bedrock-test": "^2.0.0",
     "bedrock-validation": "^4.0.0",
     "bedrock-views": "^5.4.1",
-    "eslint-config-digitalbazaar": "^1.1.0",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-watch": "^1.0.0",

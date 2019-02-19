@@ -1,9 +1,7 @@
-/*
- * Copyright (c) 2018 Digital Bazaar, Inc. All rights reserved.
- */
-/* jshint node: true */
-
 'use strict';
+/*
+ * Copyright (c) 2019 Digital Bazaar, Inc. All rights reserved.
+ */
 
 const brAccount = require('bedrock-account');
 const database = require('bedrock-mongodb');
