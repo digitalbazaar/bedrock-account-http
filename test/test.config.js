@@ -1,7 +1,7 @@
-/*!
- * Copyright (c) 2012-2018 Digital Bazaar, Inc. All rights reserved.
- */
 'use strict';
+/*!
+ * Copyright (c) 2012-2019 Digital Bazaar, Inc. All rights reserved.
+ */
 
 const {config} = require('bedrock');
 const path = require('path');
