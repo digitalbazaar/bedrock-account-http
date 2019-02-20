@@ -4,7 +4,7 @@
   "description": "HTTP API for Bedrock User Accounts",
   "main": "./lib",
   "scripts": {
-    "lint": "eslint lib test"
+    "lint": "eslint **/*.js"
   },
   "repository": {
     "type": "git",
