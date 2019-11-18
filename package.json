@@ -34,7 +34,7 @@
     "bedrock": "1.12.1 - 3.x",
     "bedrock-account": "^2.0.0",
     "bedrock-express": "2.0.8 - 3.x",
-    "bedrock-passport": "^4.0.0",
+    "bedrock-passport": "4.x - 5.x",
     "bedrock-validation": "^4.1.0"
   },
   "directories": {
