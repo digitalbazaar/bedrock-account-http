@@ -1,5 +1,7 @@
 # bedrock-account-http ChangeLog
 
+## 1.2.0 - 2019-11-18
+
 ### Changed
 - Update dependencies.
 
