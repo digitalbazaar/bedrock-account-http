@@ -1,5 +1,10 @@
 # bedrock-account-http ChangeLog
 
+## 1.3.0 - 2019-12-xx
+
+### Added
+- Add auto-login feature for new account registrations.
+
 ## 1.2.0 - 2019-11-18
 
 ### Changed
