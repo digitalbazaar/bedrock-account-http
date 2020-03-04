@@ -1,5 +1,11 @@
 # bedrock-account-http ChangeLog
 
+## 1.4.0 - 2020-xx-xx
+
+### Added
+- Add auto-login event for extending new account registration
+  behavior.
+
 ## 1.3.0 - 2019-12-24
 
 ### Added
