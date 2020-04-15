@@ -6,7 +6,7 @@
 const brAccount = require('bedrock-account');
 const database = require('bedrock-mongodb');
 const {promisify} = require('util');
-const uuid = require('uuid/v4');
+const {util: {uuid}} = require('bedrock');
 
 const api = {};
 module.exports = api;
