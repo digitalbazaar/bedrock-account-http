@@ -1,5 +1,11 @@
 # bedrock-account-http ChangeLog
 
+## 1.5.0 - 2020-04-15
+
+### Changed
+- Enable CI workflow.
+- Simplify package dependencies.
+
 ## 1.4.0 - 2020-03-04
 
 ### Added
