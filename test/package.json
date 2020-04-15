@@ -6,6 +6,9 @@
   "main": "test",
   "scripts": {
     "test": "node --preserve-symlinks test.js test",
+    "coverage": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text-summary npm test",
+    "coverage-ci": "cross-env NODE_ENV=test nyc --reporter=text-lcov npm test > coverage.lcov",
+    "coverage-report": "nyc report",
     "watch": "grunt watch"
   },
   "repository": {
@@ -32,16 +35,25 @@
     "bedrock-passport": "^5.0.0",
     "bedrock-permission": "^2.4.2",
     "bedrock-rest": "^3.0.0",
-    "bedrock-server": "^2.4.0",
-    "bedrock-test": "^4.0.2",
+    "bedrock-server": "^2.6.0",
+    "bedrock-test": "^5.0.0",
     "bedrock-validation": "^4.0.0",
+    "cross-env": "^7.0.2",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-shell": "^2.1.0",
+    "nyc": "^15.0.1",
+    "sinon": "^9.0.0",
     "uuid": "^3.0.0"
   },
-  "devDependencies": {
-    "sinon": "^7.2.3"
+  "nyc": {
+    "excludeNodeModules": false,
+    "include": [
+      "node_modules/bedrock-account-http/**"
+    ],
+    "exclude": [
+      "node_modules/bedrock-account-http/node_modules/**"
+    ]
   }
 }

@@ -30,8 +30,8 @@ const baseURL =
 // TODO extend mocha should with this
 function validationError(
   result, errorMethod,
-  expectedError, expectedStatus = 400)
-{
+  expectedError, expectedStatus = 400
+) {
   result.status.should.equal(expectedStatus);
   result.data.should.have.property('message');
   result.data.should.have.property('type');
