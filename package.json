@@ -29,11 +29,11 @@
     "express-query-int": "^3.0.0"
   },
   "peerDependencies": {
-    "bedrock": "^3.1.0",
-    "bedrock-account": "^3.0.0",
-    "bedrock-express": "^3.2.0",
-    "bedrock-passport": "^5.0.2",
-    "bedrock-validation": "^4.4.0"
+    "bedrock": "2.x - 3.x",
+    "bedrock-account": "2.x - 3.x",
+    "bedrock-express": "2.x - 3.x",
+    "bedrock-passport": "4.x - 5.x",
+    "bedrock-validation": "3.x - 4.x"
   },
   "directories": {
     "lib": "./lib"
