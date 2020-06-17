@@ -1,5 +1,10 @@
 # bedrock-account-http ChangeLog
 
+## 1.5.1 - 2020-06-17
+
+### Changed
+- Update peer and test dependencies related to MongoDB upgrade.
+
 ## 1.5.0 - 2020-04-15
 
 ### Changed
