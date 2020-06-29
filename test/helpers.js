@@ -35,7 +35,7 @@ api.prepareDatabase = async mockData => {
 };
 
 // called by prepareDatabase
-api.removeCollections = async (collectionNames = ['account', 'identity']) => {
+api.removeCollections = async (collectionNames = ['account']) => {
   await promisify(database.openCollections)(collectionNames);
   for(const collectionName of collectionNames) {
     await database.collections[collectionName].deleteMany({});

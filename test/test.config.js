@@ -40,32 +40,3 @@ roles['bedrock-account.admin'] = {
     permissions.ACCOUNT_META_UPDATE.id
   ]
 };
-
-roles['bedrock-identity.regular'] = {
-  id: 'bedrock-identity.regular',
-  label: 'Identity Test Role',
-  comment: 'Role for Test User',
-  sysPermission: [
-    permissions.IDENTITY_ACCESS.id,
-    permissions.IDENTITY_UPDATE.id,
-    permissions.IDENTITY_INSERT.id,
-    permissions.IDENTITY_UPDATE_MEMBERSHIP.id,
-    permissions.IDENTITY_CAPABILITY_DELEGATE.id,
-    permissions.IDENTITY_CAPABILITY_REVOKE.id
-  ]
-};
-roles['bedrock-identity.admin'] = {
-  id: 'bedrock-identity.admin',
-  label: 'Identity Test Role',
-  comment: 'Role for Admin User',
-  sysPermission: [
-    permissions.IDENTITY_ACCESS.id,
-    permissions.IDENTITY_UPDATE.id,
-    permissions.IDENTITY_INSERT.id,
-    permissions.IDENTITY_REMOVE.id,
-    permissions.IDENTITY_META_UPDATE.id,
-    permissions.IDENTITY_UPDATE_MEMBERSHIP.id,
-    permissions.IDENTITY_CAPABILITY_DELEGATE.id,
-    permissions.IDENTITY_CAPABILITY_REVOKE.id
-  ]
-};
