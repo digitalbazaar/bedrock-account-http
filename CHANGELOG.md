@@ -1,5 +1,11 @@
 # bedrock-account-http ChangeLog
 
+## 1.6.0 - 2020-06-29
+
+### Changed
+- Update peerDependencies to include bedrock-account@4.
+- Update test deps and CI workflow.
+
 ## 1.5.1 - 2020-06-17
 
 ### Changed
