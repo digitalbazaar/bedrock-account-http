@@ -1,5 +1,10 @@
 # bedrock-account-http ChangeLog
 
+## 1.7.0 - 2020-07-07
+
+### Changed
+- Update test deps and CI workflow.
+
 ## 1.6.0 - 2020-06-29
 
 ### Changed
