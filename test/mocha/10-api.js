@@ -86,14 +86,14 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       result.status.should.equal(201);
     });
 
-    it('should return 201 for accounts with the same email', async function() {
+    it('should return 409 for accounts with the same email', async function() {
       const email = {email: 'multiple@digitalbazaar.com'};
       const result1 = await api.post('/', email);
       const result2 = await api.post('/', email);
-      const result3 = await api.post('/', email);
+
       result1.status.should.equal(201);
-      result2.status.should.equal(201);
-      result3.status.should.equal(201);
+      result2.data.message.should.equal('Duplicate account.');
+      result2.data.details.httpStatusCode.should.equal(409);
     });
 
   });
@@ -276,40 +276,20 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       type.should.match(/NotFoundError/i);
     });
 
-    it('should return 3 accounts', async function() {
-      const email = 'multi@example.com';
-      stubPassportStub(Emails.admin);
-      const result = await api.get('/', {email});
-      result.data.should.be.an('array');
-      const {data} = result;
-      data.length.should.equal(3);
-      data.forEach(entry => {
-        entry.should.be.an('object');
-        entry.should.have.property('account');
-        entry.should.have.property('meta');
-        const {account} = entry;
-        account.should.have.property('id');
-        account.should.have.property('email');
-        account.email.should.equal(email);
-      });
-    });
-
-    it('should return 2 accounts', async function() {
+    it('should return only 1 account', async function() {
       const email = 'multi@example.com';
       stubPassportStub(Emails.admin);
       const result = await api.get('/', {email, limit: 2});
       result.data.should.be.an('array');
       const {data} = result;
-      data.length.should.equal(2);
-      data.forEach(entry => {
-        entry.should.be.an('object');
-        entry.should.have.property('account');
-        entry.should.have.property('meta');
-        const {account} = entry;
-        account.should.have.property('id');
-        account.should.have.property('email');
-        account.email.should.equal(email);
-      });
+      data.length.should.equal(1);
+      data[0].should.be.an('object');
+      data[0].should.have.property('account');
+      data[0].should.have.property('meta');
+      const {account} = data[0];
+      account.should.have.property('id');
+      account.should.have.property('email');
+      account.email.should.equal(email);
     });
 
     it('should return 400 invalid', async function() {
@@ -335,19 +315,6 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       data.should.be.an('object');
       data.should.not.have.property('meta');
       data.should.not.have.property('account');
-    });
-    it('should paginate', async function() {
-      const email = 'multi@example.com';
-      stubPassportStub(Emails.admin);
-      const result = await api.get('/', {email});
-      result.data.should.be.an('array');
-      const {data} = result;
-      data.length.should.equal(3);
-      const mid = data[data.length - 2];
-      const {account: {id}} = mid;
-      const nextResults = await api.get('/', {email, after: id});
-      nextResults.data.should.be.an('array');
-      nextResults.data.length.should.equal(1);
     });
   });
 });
