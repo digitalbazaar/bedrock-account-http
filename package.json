@@ -1,6 +1,6 @@
 {
   "name": "bedrock-account-http",
-  "version": "2.0.0",
+  "version": "2.0.1-0",
   "description": "HTTP API for Bedrock User Accounts",
   "license": "SEE LICENSE IN LICENSE.md",
   "main": "./lib",
