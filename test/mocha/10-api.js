@@ -92,6 +92,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const result2 = await api.post('/', email);
 
       result1.status.should.equal(201);
+      result2.data.type.should.equal('DuplicateError');
       result2.data.message.should.equal('Duplicate account.');
       result2.data.details.httpStatusCode.should.equal(409);
     });
