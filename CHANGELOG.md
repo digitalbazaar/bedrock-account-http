@@ -1,8 +1,8 @@
 # bedrock-account-http ChangeLog
 
-## 2.0.0 - 2021-01-TBD
+## 2.0.0 - 2021-01-12
 
-## Changed
+### Changed
 - **BREAKING**: Remove limit option
 - **BREAKING**: Update bedrock-account@5.
 
