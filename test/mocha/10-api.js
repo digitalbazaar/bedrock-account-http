@@ -279,7 +279,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     it('should return only 1 account', async function() {
       const email = 'multi@example.com';
       stubPassportStub(Emails.admin);
-      const result = await api.get('/', {email, limit: 2});
+      const result = await api.get('/', {email});
       result.data.should.be.an('array');
       const {data} = result;
       data.length.should.equal(1);
