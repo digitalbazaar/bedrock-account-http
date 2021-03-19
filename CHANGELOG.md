@@ -1,5 +1,10 @@
 # bedrock-account-http ChangeLog
 
+## 3.0.0 - 2021-03-TBD
+
+### Changed
+- **BREAKING**: Use bedrock-validation@5.0.0. Email addresses must be all lowercase.
+
 ## 2.0.0 - 2021-01-12
 
 ### Changed
