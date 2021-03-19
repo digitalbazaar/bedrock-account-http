@@ -33,7 +33,7 @@
     "bedrock-account": "^5.0.0",
     "bedrock-express": "2.0.8 - 3.x",
     "bedrock-passport": "5.x - 6.x",
-    "bedrock-validation": "digitalbazaar/bedrock-validation#update-email-schema"
+    "bedrock-validation": "^5.0.0"
   },
   "directories": {
     "lib": "./lib"
