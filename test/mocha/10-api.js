@@ -97,6 +97,17 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       result2.data.details.httpStatusCode.should.equal(409);
     });
 
+    it('should return 400 if the email contains uppercase chars',
+      async function() {
+        const result = await api.post('/',
+          {email: 'newUser@digitalbazaar.com'});
+        result.status.should.equal(400);
+        result.data.type.should.equal('ValidationError');
+        result.data.message.should.equal(`A validation error occured in the ` +
+          `'bedrock-accounts-http account creation post' validator.`);
+        result.data.details.httpStatusCode.should.equal(400);
+      });
+
   });
 
   describe('get /:account', function() {
