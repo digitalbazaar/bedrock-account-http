@@ -1,5 +1,10 @@
 # bedrock-account-http ChangeLog
 
+## 3.1.0 - 2021-TBD
+
+### Added
+- Add `res` to autoLogin event params.
+
 ## 3.0.0 - 2021-03-19
 
 ### Changed
