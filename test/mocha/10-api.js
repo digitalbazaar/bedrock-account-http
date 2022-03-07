@@ -1,7 +1,6 @@
 /*!
- * Copyright (c) 2019-2021 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2022 Digital Bazaar, Inc. All rights reserved.
  */
-
 'use strict';
 
 const bedrock = require('bedrock');
@@ -12,8 +11,7 @@ const https = require('https');
 const helpers = require('../helpers');
 const mockData = require('../mock.data');
 
-const Emails = {
-  admin: 'admin@example.com',
+const emails = {
   alpha: 'alpha@example.com',
   multi: 'multi@example.com',
   updated: 'will-be-updated@example.com'
@@ -107,13 +105,12 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
           `'bedrock-accounts-http account creation post' validator.`);
         result.data.details.httpStatusCode.should.equal(400);
       });
-
   });
 
   describe('get /:account', function() {
     it('should return an account', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.admin);
+      stubPassportStub(emails.alpha);
       const result = await api.get(`/${id}`);
       result.status.should.equal(200);
       const {data} = result;
@@ -124,7 +121,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should return 403 if actor does not have permission', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.multi);
+      stubPassportStub(emails.multi);
       const result = await api.get(`/${id}`);
       result.status.should.equal(403);
       const {data} = result;
@@ -135,7 +132,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should return 404 if not account for id', async function() {
       const id = 'does-not-exist';
-      stubPassportStub(Emails.admin);
+      stubPassportStub(emails.admin);
       const result = await api.get(`/${id}`);
       result.status.should.equal(404);
       const {data} = result;
@@ -147,32 +144,37 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
   describe('post /:account/status', function() {
     it('should change the status to deleted', async function() {
-      const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.admin);
+      const email = `${uuid}@digitalbazaar.com`;
+      const createResult = await api.post('/', {email});
+
+      const {id} = createResult;
+      stubPassportStub(email);
       const status = 'deleted';
       const result = await api.post(`/${id}/status`, {status});
       result.status.should.equal(204);
       const nextResult = await api.get(`/${id}`);
-      nextResult.data.should.have.property('meta');
-      nextResult.data.meta.should.have.property('status');
-      nextResult.data.meta.status.should.equal(status);
+      nextResult.status.should.equal(404);
     });
 
     it('should change the status to disabled', async function() {
-      const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.admin);
+      const email = `${uuid}@digitalbazaar.com`;
+      const createResult = await api.post('/', {email});
+
+      const {id} = createResult;
+      stubPassportStub(email);
       const status = 'disabled';
       const result = await api.post(`/${id}/status`, {status});
       result.status.should.equal(204);
       const nextResult = await api.get(`/${id}`);
-      nextResult.data.should.have.property('meta');
-      nextResult.data.meta.should.have.property('status');
-      nextResult.data.meta.status.should.equal(status);
+      nextResult.status.should.equal(404);
     });
 
-    it('should change the status to active', async function() {
-      const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.admin);
+    it('should keep status at active', async function() {
+      const email = `${uuid}@digitalbazaar.com`;
+      const createResult = await api.post('/', {email});
+
+      const {id} = createResult;
+      stubPassportStub(email);
       const status = 'active';
       const result = await api.post(`/${id}/status`, {status});
       result.status.should.equal(204);
@@ -182,9 +184,37 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       nextResult.data.meta.status.should.equal(status);
     });
 
+    it('should fail to reactivate disabled account', async function() {
+      const email = `${uuid}@digitalbazaar.com`;
+      const createResult = await api.post('/', {email});
+
+      const {id} = createResult;
+      stubPassportStub(email);
+      const status = 'disabled';
+      const result = await api.post(`/${id}/status`, {status});
+      result.status.should.equal(204);
+
+      const result = await api.post(`/${id}/status`, {status: 'active'});
+      result.status.should.equal(403);
+    });
+
+    it('should fail to reactivate deleted account', async function() {
+      const email = `${uuid}@digitalbazaar.com`;
+      const createResult = await api.post('/', {email});
+
+      const {id} = createResult;
+      stubPassportStub(email);
+      const status = 'deleted';
+      const result = await api.post(`/${id}/status`, {status});
+      result.status.should.equal(204);
+
+      const result = await api.post(`/${id}/status`, {status: 'active'});
+      result.status.should.equal(403);
+    });
+
     it('should return 403', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.multi);
+      stubPassportStub(emails.multi);
       const status = 'deleted';
       const result = await api.post(`/${id}/status`, {status});
       result.status.should.equal(403);
@@ -192,35 +222,16 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should return 400', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.multi);
+      stubPassportStub(emails.multi);
       const result = await api.post(`/${id}/status`);
       validationError(result, 'patch', /status/i);
     });
   });
-  describe('get /:account/roles', function() {
-    it('should return an account', async function() {
-      const {account: {id}} = accounts['alpha@example.com'];
-      const result = await api.get(`/${id}/roles`);
-      result.status.should.equal(200);
-      const {data} = result;
-      data.should.be.an('object');
-      data.should.have.property('id');
-      data.should.have.property('sysResourceRole');
-      data.sysResourceRole.should.be.an('array');
-      data.sysResourceRole.forEach(role => {
-        role.should.have.property('sysRole');
-        role.sysRole.should.be.an('string');
-        role.should.have.property('resource');
-        role.resource.should.be.an('array');
-      });
-    });
-  });
 
   describe('patch /:account', function() {
-
     it('should update an account', async function() {
-      const {account: {id}} = accounts[Emails.updated];
-      stubPassportStub(Emails.admin);
+      const {account: {id}} = accounts[emails.updated];
+      stubPassportStub(emails.updated);
       const value = 'updated@tester.org';
       const patch = [{op: 'replace', path: '/email', value}];
       const patchResult = await api.patch(`/${id}`, {sequence: 0, patch});
@@ -234,19 +245,19 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const {account} = data;
       account.should.have.property('email');
       account.email.should.equal(value);
-      account.email.should.not.contain(Emails.updated);
+      account.email.should.not.contain(emails.updated);
     });
 
     it('should fail if there are no patches', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.admin);
+      stubPassportStub(emails.alpha);
       const result = await api.patch(`/${id}`, {sequence: 10, patch: []});
       validationError(result, 'update', /items/i);
     });
 
     it('should fail if there are extra paramaters', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.admin);
+      stubPassportStub(emails.alpha);
       const value = 'fail@extras.org';
       const patch = [{op: 'replace', path: '/email', value}];
       const result = await api
@@ -256,7 +267,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should fail if there is no sequence', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
-      stubPassportStub(Emails.admin);
+      stubPassportStub(emails.alpha);
       const value = 'updated@tester.org';
       const patch = [{op: 'replace', path: '/email', value}];
       const result = await api.patch(`/${id}`, {patch});
@@ -271,7 +282,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
 
     it('return 200 if the email is found', async function returnAccount() {
-      const email = 'admin@example.com';
+      const email = 'alpha@example.com';
       const result = await api.get('/', {exists: true, email});
       const {status} = result;
       should.equal(status, 200);
@@ -290,7 +301,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should return only 1 account', async function() {
       const email = 'multi@example.com';
-      stubPassportStub(Emails.admin);
+      stubPassportStub(emails.multi);
       const result = await api.get('/', {email});
       result.data.should.be.an('array');
       const {data} = result;
@@ -306,21 +317,21 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should return 400 invalid', async function() {
       const email = null;
-      stubPassportStub(Emails.admin);
+      stubPassportStub(emails.alpha);
       const result = await api.get('/', {email});
       validationError(result, 'accounts', /email/i);
     });
 
     it('should fail if there are extra parameters', async function() {
       const email = 'tomany@params.org';
-      stubPassportStub(Emails.admin);
+      stubPassportStub(emails.alpha);
       const result = await api.get('/', {email, extra: true});
       validationError(result, 'accounts', /additional/i);
     });
 
     it('should return 403 due to permission', async function() {
-      const email = 'admin@example.com';
-      stubPassportStub(Emails.multi);
+      const email = 'multi@example.com';
+      stubPassportStub(emails.alpha);
       const result = await api.get('/', {email});
       result.status.should.equal(403);
       const {data} = result;

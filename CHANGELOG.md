@@ -1,5 +1,21 @@
 # bedrock-account-http ChangeLog
 
+## 4.0.0 - 2022-03-xx
+
+### Changed
+- **BREAKING**: Update peer deps:
+  - `bedrock@4.4`
+  - `bedrock-validation@5.5`
+  - `bedrock-mongodb@8.4`
+  - `bedrock-passport@7.0`
+- **BREAKING**: Disable cors on get account route to avoid CSRF attacks.
+
+### Removed
+- **BREAKING**: Remove all usage of `bedrock-permission` including
+  roles (e.g., `sysResourceRole`), `actor`, etc. All authz should
+  be managed via HTTP (or other) APIs and technologies such as
+  zcaps, meters, and oauth2.
+
 ## 3.1.0 - 2021-06-08
 
 ### Added
