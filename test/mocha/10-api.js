@@ -10,6 +10,8 @@ const {create} = require('apisauce');
 const https = require('https');
 const helpers = require('../helpers');
 const mockData = require('../mock.data');
+const {util: {uuid}} = require('bedrock');
+const {_deserializeUser} = require('bedrock-passport');
 
 const emails = {
   alpha: 'alpha@example.com',
@@ -19,13 +21,11 @@ const emails = {
 
 let accounts;
 let api;
-let actors;
 
 const baseURL =
  `https://${config.server.host}${config['account-http'].routes.basePath}`;
 
 // simple quick func to check validation errors
-// TODO extend mocha should with this
 function validationError(
   result, errorMethod,
   expectedError, expectedStatus = 400
@@ -49,11 +49,19 @@ function validationError(
 passportStub.callsFake((req, res, next) => next());
 
 function stubPassportStub(email) {
-  passportStub.callsFake((req, res, next) => {
-    req.user = {
-      actor: actors[email],
-      account: accounts[email].account
-    };
+  passportStub.callsFake(async (req, res, next) => {
+    if(!email) {
+      req.user = null;
+      return next();
+    }
+
+    try {
+      req.user = await _deserializeUser({
+        accountId: accounts[email].account.id
+      });
+    } catch(e) {
+      return next(e);
+    }
     next();
   });
 }
@@ -61,12 +69,14 @@ function stubPassportStub(email) {
 describe('bedrock-account-http', function bedrockAccountHttp() {
   before(async function setup() {
     await helpers.prepareDatabase(mockData);
-    actors = await helpers.getActors(mockData);
-    accounts = mockData.accounts;
+    accounts = {...mockData.accounts};
     api = create({
       baseURL,
       httpsAgent: new https.Agent({rejectUnauthorized: false})
     });
+  });
+  afterEach(function() {
+    stubPassportStub(null);
   });
   after(async function() {
     passportStub.restore();
@@ -119,7 +129,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       data.should.have.property('account');
     });
 
-    it('should return 403 if actor does not have permission', async function() {
+    it('should return 403', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       stubPassportStub(emails.multi);
       const result = await api.get(`/${id}`);
@@ -130,11 +140,11 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       data.should.not.have.property('account');
     });
 
-    it('should return 404 if not account for id', async function() {
+    it('should return 403 if no account exists for id', async function() {
       const id = 'does-not-exist';
-      stubPassportStub(emails.admin);
+      stubPassportStub(emails.alpha);
       const result = await api.get(`/${id}`);
-      result.status.should.equal(404);
+      result.status.should.equal(403);
       const {data} = result;
       data.should.be.an('object');
       data.should.not.have.property('meta');
@@ -144,10 +154,10 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
   describe('post /:account/status', function() {
     it('should change the status to deleted', async function() {
-      const email = `${uuid}@digitalbazaar.com`;
-      const createResult = await api.post('/', {email});
-
-      const {id} = createResult;
+      const email = `${uuid()}@digitalbazaar.com`;
+      const {data} = await api.post('/', {email});
+      accounts[email] = {account: data, meta: {}};
+      const {id} = data;
       stubPassportStub(email);
       const status = 'deleted';
       const result = await api.post(`/${id}/status`, {status});
@@ -157,23 +167,23 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
 
     it('should change the status to disabled', async function() {
-      const email = `${uuid}@digitalbazaar.com`;
-      const createResult = await api.post('/', {email});
-
-      const {id} = createResult;
+      const email = `${uuid()}@digitalbazaar.com`;
+      const {data} = await api.post('/', {email});
+      accounts[email] = {account: data, meta: {}};
+      const {id} = data;
       stubPassportStub(email);
       const status = 'disabled';
       const result = await api.post(`/${id}/status`, {status});
       result.status.should.equal(204);
       const nextResult = await api.get(`/${id}`);
-      nextResult.status.should.equal(404);
+      nextResult.status.should.equal(403);
     });
 
     it('should keep status at active', async function() {
-      const email = `${uuid}@digitalbazaar.com`;
-      const createResult = await api.post('/', {email});
-
-      const {id} = createResult;
+      const email = `${uuid()}@digitalbazaar.com`;
+      const {data} = await api.post('/', {email});
+      accounts[email] = {account: data, meta: {}};
+      const {id} = data;
       stubPassportStub(email);
       const status = 'active';
       const result = await api.post(`/${id}/status`, {status});
@@ -185,31 +195,31 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
 
     it('should fail to reactivate disabled account', async function() {
-      const email = `${uuid}@digitalbazaar.com`;
-      const createResult = await api.post('/', {email});
-
-      const {id} = createResult;
+      const email = `${uuid()}@digitalbazaar.com`;
+      const {data} = await api.post('/', {email});
+      accounts[email] = {account: data, meta: {}};
+      const {id} = data;
       stubPassportStub(email);
       const status = 'disabled';
       const result = await api.post(`/${id}/status`, {status});
       result.status.should.equal(204);
 
-      const result = await api.post(`/${id}/status`, {status: 'active'});
-      result.status.should.equal(403);
+      const nextResult = await api.post(`/${id}/status`, {status: 'active'});
+      nextResult.status.should.equal(403);
     });
 
     it('should fail to reactivate deleted account', async function() {
-      const email = `${uuid}@digitalbazaar.com`;
-      const createResult = await api.post('/', {email});
-
-      const {id} = createResult;
+      const email = `${uuid()}@digitalbazaar.com`;
+      const {data} = await api.post('/', {email});
+      accounts[email] = {account: data, meta: {}};
+      const {id} = data;
       stubPassportStub(email);
       const status = 'deleted';
       const result = await api.post(`/${id}/status`, {status});
       result.status.should.equal(204);
 
-      const result = await api.post(`/${id}/status`, {status: 'active'});
-      result.status.should.equal(403);
+      const nextResult = await api.post(`/${id}/status`, {status: 'active'});
+      nextResult.status.should.equal(404);
     });
 
     it('should return 403', async function() {
@@ -329,15 +339,14 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       validationError(result, 'accounts', /additional/i);
     });
 
-    it('should return 403 due to permission', async function() {
+    it('should return no results for non-matching account', async function() {
       const email = 'multi@example.com';
       stubPassportStub(emails.alpha);
       const result = await api.get('/', {email});
-      result.status.should.equal(403);
+      result.status.should.equal(200);
       const {data} = result;
-      data.should.be.an('object');
-      data.should.not.have.property('meta');
-      data.should.not.have.property('account');
+      data.should.be.an('array');
+      data.length.should.equal(0);
     });
   });
 });

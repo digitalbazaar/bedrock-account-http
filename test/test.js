@@ -7,7 +7,9 @@ const sinon = require('sinon');
 const brPassport = require('bedrock-passport');
 global.passportStub = sinon.stub(brPassport, 'optionallyAuthenticated');
 const bedrock = require('bedrock');
+require('bedrock-account');
 require('bedrock-account-http');
+require('bedrock-mongodb');
 
 require('bedrock-test');
 bedrock.start();
