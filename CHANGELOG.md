@@ -7,7 +7,7 @@
   - `bedrock@4.4`
   - `bedrock-validation@5.5`
   - `bedrock-mongodb@8.4`
-  - `bedrock-passport@7.0`
+  - `bedrock-passport@8`
 - **BREAKING**: Disable cors on get account route to avoid CSRF attacks.
 
 ### Removed

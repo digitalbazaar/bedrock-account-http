@@ -31,7 +31,7 @@
     "bedrock-account-http": "file:..",
     "bedrock-express": "^6.2.2",
     "bedrock-mongodb": "^8.4.0",
-    "bedrock-passport": "^7.0.0",
+    "bedrock-passport": "^8.0.2",
     "bedrock-server": "^3.1.0",
     "bedrock-test": "^6.0.0",
     "bedrock-validation": "^5.5.0",
