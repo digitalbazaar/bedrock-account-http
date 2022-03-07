@@ -1,11 +1,10 @@
-/*
- * Copyright (c) 2019-2021 Digital Bazaar, Inc. All rights reserved.
+/*!
+ * Copyright (c) 2019-2022 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
 const brAccount = require('bedrock-account');
 const database = require('bedrock-mongodb');
-const {promisify} = require('util');
 const {util: {uuid}} = require('bedrock');
 
 const api = {};
@@ -19,16 +18,7 @@ api.createAccount = email => {
   return newAccount;
 };
 
-//called in before
-api.getActors = async mockData => {
-  const actors = {};
-  for(const [key, record] of Object.entries(mockData.accounts)) {
-    actors[key] = await brAccount.getCapabilities({id: record.account.id});
-  }
-  return actors;
-};
-
-//called in test before hook
+// called in test before hook
 api.prepareDatabase = async mockData => {
   await api.removeCollections();
   await insertTestData(mockData);
@@ -36,7 +26,7 @@ api.prepareDatabase = async mockData => {
 
 // called by prepareDatabase
 api.removeCollections = async (collectionNames = ['account']) => {
-  await promisify(database.openCollections)(collectionNames);
+  await database.openCollections(collectionNames);
   for(const collectionName of collectionNames) {
     await database.collections[collectionName].deleteMany({});
   }
@@ -50,8 +40,9 @@ async function insertTestData(mockData) {
   const records = Object.values(mockData.accounts);
   for(const record of records) {
     try {
-      await brAccount.insert(
-        {actor: null, account: record.account, meta: record.meta || {}});
+      await brAccount.insert({
+        account: record.account, meta: record.meta || {}
+      });
     } catch(e) {
       if(e.name === 'DuplicateError') {
         // duplicate error means test data is already loaded
