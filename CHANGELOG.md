@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 4.0.0 - 2022-03-xx
+## 4.0.0 - 2022-03-07
 
 ### Changed
 - **BREAKING**: Update peer deps:
