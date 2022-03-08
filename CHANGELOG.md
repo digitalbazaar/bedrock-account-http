@@ -9,6 +9,8 @@
   - `bedrock-mongodb@8.4`
   - `bedrock-passport@8`
 - **BREAKING**: Disable cors on get account route to avoid CSRF attacks.
+- **BREAKING**: Remove `schemas` directory from configured schemas, load
+  locally only using the new `bedrock-validation@5` model.
 
 ### Removed
 - **BREAKING**: Remove all usage of `bedrock-permission` including
