@@ -1,11 +1,11 @@
 /*!
- * Copyright (c) 2019-2021 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2022 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
 const {schemas} = require('bedrock-validation');
 
-const create = {
+exports.create = () => ({
   title: 'bedrock-accounts-http account creation post',
   type: 'object',
   required: ['email'],
@@ -13,9 +13,9 @@ const create = {
   properties: {
     email: schemas.email()
   }
-};
+});
 
-const get = {
+exports.get = () => ({
   title: 'bedrock-accounts-http get',
   type: 'object',
   required: ['email'],
@@ -35,22 +35,9 @@ const get = {
       maximum: 1000
     }
   }
-};
+});
 
-const setStatus = {
-  title: 'bedrock-accounts-http patch set status',
-  required: ['status'],
-  type: 'object',
-  additionalProperties: false,
-  properties: {
-    status: {
-      type: 'string',
-      enum: ['active', 'disabled', 'deleted']
-    }
-  }
-};
-
-const update = {
+exports.update = () => ({
   title: 'bedrock-accounts-http account update',
   required: ['patch', 'sequence'],
   type: 'object',
@@ -62,8 +49,17 @@ const update = {
       minimum: 0
     }
   }
-};
-module.exports.create = () => create;
-module.exports.get = () => get;
-module.exports.update = () => update;
-module.exports.setStatus = () => setStatus;
+});
+
+exports.setStatus = () => ({
+  title: 'bedrock-accounts-http patch set status',
+  required: ['status'],
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    status: {
+      type: 'string',
+      enum: ['active', 'disabled', 'deleted']
+    }
+  }
+});
