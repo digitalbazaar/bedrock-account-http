@@ -1,5 +1,11 @@
 # bedrock-account-http ChangeLog
 
+## 4.1.0 - 2022-03-xx
+
+### Changed
+- Use `esm.js` to transpile internals from ESM to CommonJS. Should be
+  a non-breaking change.
+
 ## 4.0.0 - 2022-03-07
 
 ### Changed
