@@ -1,13 +1,13 @@
 # bedrock-account-http ChangeLog
 
-## 4.2.0 - 2022-03-xx
+## 4.2.0 - 2022-03-23
 
 ### Changed
 - Update peer deps:
   - `bedrock@4.5`.
   - `bedrock-account@6.3`.
 
-## 4.1.1 - 2022-03-xx
+## 4.1.1 - 2022-03-23
 
 ### Fixed
 - Fix linting errors.
