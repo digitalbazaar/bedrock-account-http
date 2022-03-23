@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-account-http",
   "dependencies": {
+    "esm": "^3.2.25",
     "express-query-boolean": "^2.0.0",
     "express-query-int": "^3.0.0"
   },

@@ -27,7 +27,7 @@
   "dependencies": {
     "apisauce": "^2.0.0",
     "bedrock": "^4.4.3",
-    "bedrock-account": "^6.0.0",
+    "bedrock-account": "^6.2.0",
     "bedrock-account-http": "file:..",
     "bedrock-express": "^6.2.2",
     "bedrock-mongodb": "^8.4.0",
