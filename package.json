@@ -29,8 +29,8 @@
     "express-query-int": "^3.0.0"
   },
   "peerDependencies": {
-    "bedrock": "^4.4.3",
-    "bedrock-account": "^6.0.0",
+    "bedrock": "^4.5.0",
+    "bedrock-account": "^6.3.0",
     "bedrock-express": "^6.2.2",
     "bedrock-passport": "^8.0.2",
     "bedrock-validation": "^5.5.0"
