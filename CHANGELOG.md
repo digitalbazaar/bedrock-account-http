@@ -1,5 +1,10 @@
 # bedrock-account-http ChangeLog
 
+## 4.1.1 - 2022-03-xx
+
+### Fixed
+- Fix linting errors.
+
 ## 4.1.0 - 2022-03-23
 
 ### Changed
