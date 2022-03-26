@@ -46,25 +46,28 @@ function validationError(
   should.exist(testError);
 }
 
-passportStub.callsFake((req, res, next) => next());
-
+let passportStubSettings = {email: null};
 function stubPassportStub(email) {
-  passportStub.callsFake(async (req, res, next) => {
-    if(!email) {
-      req.user = null;
-      return next();
-    }
-
-    try {
-      req.user = await _deserializeUser({
-        accountId: accounts[email].account.id
-      });
-    } catch(e) {
-      return next(e);
-    }
-    next();
-  });
+  passportStubSettings.email = email;
 }
+
+passportStub.callsFake((strategyName, options, callback) => {
+  return async function (req, res, next) {
+    req.isAuthenticated = req.isAuthenticated || (() => !!req.user);
+    let user = false;
+    try {
+      const {email} = passportStubSettings;
+      if(email) {
+        user = await _deserializeUser({
+          accountId: accounts[email].account.id
+        });
+      }
+    } catch(e) {
+      return callback(e);
+    }
+    callback(null, user);
+  };
+});
 
 describe('bedrock-account-http', function bedrockAccountHttp() {
   before(async function setup() {

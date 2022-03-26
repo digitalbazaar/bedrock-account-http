@@ -1,5 +1,14 @@
 # bedrock-account-http ChangeLog
 
+## 4.2.1 - 2022-03-xx
+
+### Fixed
+- Update peer deps to match those with ESM internals:
+  - `bedrock-account@6.3.2`
+  - `bedrock-express@6.4.1`
+  - `bedrock-passport@8.1.0`
+  - `bedrock-validation@^5.6.3`.
+
 ## 4.2.0 - 2022-03-23
 
 ### Changed
