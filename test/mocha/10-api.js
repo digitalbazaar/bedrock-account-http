@@ -46,13 +46,14 @@ function validationError(
   should.exist(testError);
 }
 
-let passportStubSettings = {email: null};
+const passportStubSettings = {email: null};
 function stubPassportStub(email) {
   passportStubSettings.email = email;
 }
 
 passportStub.callsFake((strategyName, options, callback) => {
-  return async function (req, res, next) {
+  // eslint-disable-next-line no-unused-vars
+  return async function(req, res, next) {
     req.isAuthenticated = req.isAuthenticated || (() => !!req.user);
     let user = false;
     try {
