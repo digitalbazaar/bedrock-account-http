@@ -1,15 +1,14 @@
 /*!
  * Copyright (c) 2016-2022 Digital Bazaar, Inc. All rights reserved.
  */
-'use strict';
-
-const sinon = require('sinon');
-const {passport} = require('bedrock-passport');
+import sinon from 'sinon';
+import {passport} from '@bedrock/passport';
 global.passportStub = sinon.stub(passport, 'authenticate');
-const bedrock = require('bedrock');
-require('bedrock-account');
-require('bedrock-account-http');
-require('bedrock-mongodb');
 
-require('bedrock-test');
+import * as bedrock from '@bedrock/core';
+import '@bedrock/account';
+import '@bedrock/account-http';
+import '@bedrock/mongodb';
+import '@bedrock/test';
+
 bedrock.start();

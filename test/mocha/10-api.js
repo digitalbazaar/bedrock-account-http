@@ -1,17 +1,15 @@
 /*!
  * Copyright (c) 2019-2022 Digital Bazaar, Inc. All rights reserved.
  */
-'use strict';
-
-const bedrock = require('bedrock');
-const {config} = bedrock;
+import * as helpers from '../helpers.js';
+import {config} from '@bedrock/core';
 // apisauce is a wrapper around axios that provides improved error handling
-const {create} = require('apisauce');
-const https = require('https');
-const helpers = require('../helpers');
-const mockData = require('../mock.data');
-const {util: {uuid}} = require('bedrock');
-const {_deserializeUser} = require('bedrock-passport');
+import {create} from 'apisauce';
+import https from 'https';
+import {mockData} from '../mock.data.js';
+import {_deserializeUser} from '@bedrock/passport';
+
+const {util: {uuid}} = bedrock;
 
 const emails = {
   alpha: 'alpha@example.com',
