@@ -1,6 +1,7 @@
 /*!
  * Copyright (c) 2019-2022 Digital Bazaar, Inc. All rights reserved.
  */
+import * as bedrock from '@bedrock/core';
 import * as helpers from '../helpers.js';
 import {config} from '@bedrock/core';
 // apisauce is a wrapper around axios that provides improved error handling
