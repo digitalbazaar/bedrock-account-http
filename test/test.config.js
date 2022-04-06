@@ -1,12 +1,13 @@
 /*!
  * Copyright (c) 2012-2022 Digital Bazaar, Inc. All rights reserved.
  */
-'use strict';
+import {config} from '@bedrock/core';
+import {fileURLToPath} from 'url';
+import path from 'path';
+import '@bedrock/mongodb';
+import '@bedrock/express';
 
-const {config} = require('bedrock');
-const path = require('path');
-require('bedrock-mongodb');
-require('bedrock-express');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 config.mocha.tests.push(path.join(__dirname, 'mocha'));
 
