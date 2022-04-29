@@ -26,11 +26,12 @@
   "homepage": "https://github.com/digitalbazaar/bedrock-account-http",
   "dependencies": {
     "express-query-boolean": "^2.0.0",
-    "express-query-int": "^3.0.0"
+    "express-query-int": "^3.0.0",
+    "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "@bedrock/core": "^6.0.0",
     "@bedrock/account": "^8.0.0",
+    "@bedrock/core": "^6.0.0",
     "@bedrock/express": "^8.0.0",
     "@bedrock/passport": "^10.0.0",
     "@bedrock/validation": "^7.0.0"
