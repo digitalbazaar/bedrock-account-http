@@ -1,11 +1,9 @@
 /*!
  * Copyright (c) 2019-2022 Digital Bazaar, Inc. All rights reserved.
  */
-import * as bedrock from '@bedrock/core';
 import * as brAccount from '@bedrock/account';
 import * as database from '@bedrock/mongodb';
-
-const {util: {uuid}} = bedrock;
+import {v4 as uuid} from 'uuid';
 
 export function createAccount(email) {
   const newAccount = {
