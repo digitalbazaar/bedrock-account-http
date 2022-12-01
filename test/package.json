@@ -27,7 +27,7 @@
     "@bedrock/account-http": "file:..",
     "@bedrock/core": "^6.0.0",
     "@bedrock/express": "^8.0.0",
-    "@bedrock/mongodb": "github:digitalbazaar/bedrock-mongodb#mongo-driver-4-rc",
+    "@bedrock/mongodb": "github:digitalbazaar/bedrock-mongodb#mongo-driver-4-rc-fix-duplicate-error",
     "@bedrock/passport": "github:digitalbazaar/bedrock-passport#use-mongo-driver-4-rc",
     "@bedrock/server": "^5.0.0",
     "@bedrock/test": "^8.0.0",
