@@ -30,7 +30,7 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "@bedrock/account": "^8.0.0",
+    "@bedrock/account": "^9.0.0",
     "@bedrock/core": "^6.0.0",
     "@bedrock/express": "^8.0.0",
     "@bedrock/passport": "^10.0.0",
