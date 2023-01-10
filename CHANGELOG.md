@@ -1,5 +1,10 @@
 # bedrock-account-http ChangeLog
 
+## 7.0.0 -
+
+### Changed
+- **BREAKING**: Use `@bedrock/account: ^9` & `@bedrock/mongodb: ^11` for Node Mongo Driver 4.
+
 ## 6.0.0 - 2022-04-29
 
 ### Changed
