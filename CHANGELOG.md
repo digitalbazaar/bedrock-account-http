@@ -1,5 +1,24 @@
 # bedrock-account-http ChangeLog
 
+## 7.0.0 - 2023-01-dd
+
+### Added
+- Add `post` method for updating accounts. Uses a simple post method that
+  requires the full account to use to overwrite the existing one (whereby the
+  `id` must continue to match) and the existing `sequence`.
+
+### Changed
+- **BREAKING**: Use `@bedrock/account@9`. This update changes the database
+  record and layout for accounts in ways that incompatible with any previous
+  releases. It also removes the `patch` method for updating, replacing it with
+  simple overwrite + `sequence`.
+- **BREAKING**: Changed exposed validator names to remove `bedrock` and use
+  simple names.
+
+### Removed
+- **BREAKING**: Remove `patch` method for updating accounts, replaced with
+  simple post for account updating.
+
 ## 6.0.0 - 2022-04-29
 
 ### Changed
