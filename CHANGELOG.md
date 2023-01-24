@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 7.0.1 - 2023-01-dd
+## 7.0.1 - 2023-01-24
 
 ### Fixed
 - Fix peer dep: `@bedrock/passport@11`.
