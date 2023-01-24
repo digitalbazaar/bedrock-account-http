@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2019-2022 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2023 Digital Bazaar, Inc. All rights reserved.
  */
 import * as helpers from '../helpers.js';
 import {config} from '@bedrock/core';
@@ -87,7 +87,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   describe('post /', function() {
     it('should return 400 if there is no email', async function() {
       const result = await api.post('/');
-      validationError(result, 'post', /email/i);
+      validationError(result, 'Create Account', /email/i);
     });
 
     it('should return 201 if there is an email', async function() {
@@ -113,7 +113,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
         result.status.should.equal(400);
         result.data.type.should.equal('ValidationError');
         result.data.message.should.equal(`A validation error occured in the ` +
-          `'bedrock-accounts-http account creation post' validator.`);
+          `'Create Account' validator.`);
         result.data.details.httpStatusCode.should.equal(400);
       });
   });
@@ -235,19 +235,20 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const {account: {id}} = accounts['alpha@example.com'];
       stubPassportStub(emails.multi);
       const result = await api.post(`/${id}/status`);
-      validationError(result, 'patch', /status/i);
+      validationError(result, 'Set Account Status', /status/i);
     });
   });
 
-  describe('patch /:account', function() {
+  describe('update /:account', function() {
     it('should update an account', async function() {
-      const {account: {id}} = accounts[emails.updated];
+      const {account: existingAccount} = accounts[emails.updated];
       stubPassportStub(emails.updated);
       const value = 'updated@tester.org';
-      const patch = [{op: 'replace', path: '/email', value}];
-      const patchResult = await api.patch(`/${id}`, {sequence: 0, patch});
-      patchResult.status.should.equal(204);
-      const getResult = await api.get(`/${id}`);
+      const updatedAccount = {...existingAccount, email: value};
+      const updateResult = await api.post(
+        `/${existingAccount.id}`, {sequence: 0, account: updatedAccount});
+      updateResult.status.should.equal(204);
+      const getResult = await api.get(`/${existingAccount.id}`);
       getResult.status.should.equal(200);
       const {data} = getResult;
       data.should.be.an('object');
@@ -259,37 +260,39 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       account.email.should.not.contain(emails.updated);
     });
 
-    it('should fail if there are no patches', async function() {
+    it('should fail if no account is in the body', async function() {
       const {account: {id}} = accounts['alpha@example.com'];
       stubPassportStub(emails.alpha);
-      const result = await api.patch(`/${id}`, {sequence: 10, patch: []});
-      validationError(result, 'update', /items/i);
+      const result = await api.post(`/${id}`, {sequence: 10});
+      validationError(result, 'Update Account', /account/i);
     });
 
     it('should fail if there are extra paramaters', async function() {
-      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: existingAccount} = accounts['alpha@example.com'];
       stubPassportStub(emails.alpha);
       const value = 'fail@extras.org';
-      const patch = [{op: 'replace', path: '/email', value}];
-      const result = await api
-        .patch(`/${id}`, {sequence: 10, patch, extra: true});
-      validationError(result, 'update', /additional/i);
+      const updatedAccount = {...existingAccount, email: value};
+      const result = await api.post(`/${existingAccount.id}`, {
+        sequence: 10, account: updatedAccount, extra: true
+      });
+      validationError(result, 'Update Account', /additional/i);
     });
 
     it('should fail if there is no sequence', async function() {
-      const {account: {id}} = accounts['alpha@example.com'];
+      const {account: existingAccount} = accounts['alpha@example.com'];
       stubPassportStub(emails.alpha);
       const value = 'updated@tester.org';
-      const patch = [{op: 'replace', path: '/email', value}];
-      const result = await api.patch(`/${id}`, {patch});
-      validationError(result, 'update', /sequence/i);
+      const updatedAccount = {...existingAccount, email: value};
+      const result = await api.post(
+        `/${existingAccount.id}`, {account: updatedAccount});
+      validationError(result, 'Update Account', /sequence/i);
     });
   });
 
   describe('get /', function getIndex() {
     it('should return 400 with no email', async function worksGreat() {
       const result = await api.get('/');
-      validationError(result, 'get', /email/i);
+      validationError(result, 'Get Accounts', /email/i);
     });
 
     it('return 200 if the email is found', async function returnAccount() {
@@ -330,14 +333,14 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const email = null;
       stubPassportStub(emails.alpha);
       const result = await api.get('/', {email});
-      validationError(result, 'accounts', /email/i);
+      validationError(result, 'Get Accounts', /email/i);
     });
 
     it('should fail if there are extra parameters', async function() {
       const email = 'tomany@params.org';
       stubPassportStub(emails.alpha);
       const result = await api.get('/', {email, extra: true});
-      validationError(result, 'accounts', /additional/i);
+      validationError(result, 'Get Accounts', /additional/i);
     });
 
     it('should return no results for non-matching account', async function() {

@@ -1,11 +1,11 @@
 /*!
- * Copyright (c) 2019-2022 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2023 Digital Bazaar, Inc. All rights reserved.
  */
 import {schemas} from '@bedrock/validation';
 
 export function create() {
   return {
-    title: 'bedrock-accounts-http account creation post',
+    title: 'Create Account',
     type: 'object',
     required: ['email'],
     additionalProperties: false,
@@ -17,7 +17,7 @@ export function create() {
 
 export function get() {
   return {
-    title: 'bedrock-accounts-http get',
+    title: 'Get Accounts',
     type: 'object',
     required: ['email'],
     additionalProperties: false,
@@ -41,12 +41,24 @@ export function get() {
 
 export function update() {
   return {
-    title: 'bedrock-accounts-http account update',
-    required: ['patch', 'sequence'],
+    title: 'Update Account',
+    required: ['account', 'sequence'],
     type: 'object',
     additionalProperties: false,
     properties: {
-      patch: schemas.jsonPatch(),
+      account: {
+        title: 'Account',
+        type: 'object',
+        required: ['id', 'email'],
+        additionalProperties: true,
+        properties: {
+          id: {
+            type: 'string',
+            minLength: 0
+          },
+          email: schemas.email()
+        }
+      },
       sequence: {
         type: 'integer',
         minimum: 0
@@ -57,7 +69,7 @@ export function update() {
 
 export function setStatus() {
   return {
-    title: 'bedrock-accounts-http patch set status',
+    title: 'Set Account Status',
     required: ['status'],
     type: 'object',
     additionalProperties: false,
