@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 7.0.0 - 2023-01-dd
+## 7.0.0 - 2023-01-24
 
 ### Added
 - Add `post` method for updating accounts. Uses a simple post method that
