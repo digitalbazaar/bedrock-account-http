@@ -28,7 +28,7 @@
     "@bedrock/account-http": "file:..",
     "@bedrock/express": "^8.0.0",
     "@bedrock/mongodb": "^10.0.0",
-    "@bedrock/passport": "^10.0.0",
+    "@bedrock/passport": "^11.0.0",
     "@bedrock/server": "^5.0.0",
     "@bedrock/test": "^8.0.0",
     "@bedrock/validation": "^7.0.0",
