@@ -10,7 +10,10 @@ export function create() {
     required: ['email'],
     additionalProperties: false,
     properties: {
-      email: schemas.email()
+      email: schemas.email(),
+      token: {
+        type: 'string'
+      }
     }
   };
 }
