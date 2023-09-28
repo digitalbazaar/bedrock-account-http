@@ -3,8 +3,9 @@
 ## 7.1.0 - 2023-09-xx
 
 ### Added
-- Add optional value `token` for captcha when registering an account.
-  This uses the Cloudflare Turnstile service.
+- Add optional `authorization` value when registering an account and
+  define first instance of it that uses a captcha via the Cloudflare
+  Turnstile service.
 
 ## 7.0.1 - 2023-01-24
 
