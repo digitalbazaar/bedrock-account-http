@@ -16,11 +16,6 @@ const emails = {
   updated: 'will-be-updated@example.com'
 };
 
-const authorization = {
-  token: 'XXXX.DUMMY.TOKEN.XXXX',
-  type: 'turnstile'
-};
-
 let accounts;
 let api;
 
@@ -91,12 +86,18 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
   describe('post /', function() {
     it('should create account with authorization', async function() {
+      config['account-http'].registration.authorizationRequired = 'turnstile';
+      const authorization = {
+        token: 'XXXX.DUMMY.TOKEN.XXXX',
+        type: 'turnstile'
+      };
       const email = {email: 'auth@digitalbazaar.com', authorization};
       const result = await api.post('/', email);
       result.status.should.equal(201);
+      config['account-http'].registration.authorizationRequired = false;
     });
     it('should create account without authorization', async function() {
-      config['account-http'].registration.authorizationRequired = false;
+
       const email = {email: 'noauth@digitalbazaar.com'};
       const result = await api.post('/', email);
       result.status.should.equal(201);
@@ -108,13 +109,13 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should return 201 if there is an email', async function() {
       const result = await api.post('/', {
-        email: 'newuser@digitalbazaar.com', authorization
+        email: 'newuser@digitalbazaar.com'
       });
       result.status.should.equal(201);
     });
 
     it('should return 409 for accounts with the same email', async function() {
-      const email = {email: 'multiple@digitalbazaar.com', authorization};
+      const email = {email: 'multiple@digitalbazaar.com'};
       const result1 = await api.post('/', email);
       const result2 = await api.post('/', email);
 
@@ -174,7 +175,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   describe('post /:account/status', function() {
     it('should change the status to deleted', async function() {
       const email = `${uuid()}@digitalbazaar.com`;
-      const {data} = await api.post('/', {email, authorization});
+      const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
       stubPassportStub(email);
@@ -187,7 +188,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should change the status to disabled', async function() {
       const email = `${uuid()}@digitalbazaar.com`;
-      const {data} = await api.post('/', {email, authorization});
+      const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
       stubPassportStub(email);
@@ -200,7 +201,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should keep status at active', async function() {
       const email = `${uuid()}@digitalbazaar.com`;
-      const {data} = await api.post('/', {email, authorization});
+      const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
       stubPassportStub(email);
@@ -215,7 +216,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should fail to reactivate disabled account', async function() {
       const email = `${uuid()}@digitalbazaar.com`;
-      const {data} = await api.post('/', {email, authorization});
+      const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
       stubPassportStub(email);
@@ -229,7 +230,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
     it('should fail to reactivate deleted account', async function() {
       const email = `${uuid()}@digitalbazaar.com`;
-      const {data} = await api.post('/', {email, authorization});
+      const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
       stubPassportStub(email);
