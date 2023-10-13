@@ -97,7 +97,6 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       config['account-http'].registration.authorizationRequired = false;
     });
     it('should create account without authorization', async function() {
-
       const email = {email: 'noauth@digitalbazaar.com'};
       const result = await api.post('/', email);
       result.status.should.equal(201);
