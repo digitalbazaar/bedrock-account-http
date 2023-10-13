@@ -90,6 +90,17 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   });
 
   describe('post /', function() {
+    it('should create account with authorization', async function() {
+      const email = {email: 'auth@digitalbazaar.com', authorization};
+      const result = await api.post('/', email);
+      result.status.should.equal(201);
+    });
+    it('should create account without authorization', async function() {
+      config['account-http'].registration.authorizationRequired = false;
+      const email = {email: 'noauth@digitalbazaar.com'};
+      const result = await api.post('/', email);
+      result.status.should.equal(201);
+    });
     it('should return 400 if there is no email', async function() {
       const result = await api.post('/');
       validationError(result, 'Create Account', /email/i);
