@@ -4,6 +4,7 @@
 
 ### Fixed
 - Remove unused `@bedrock/https-agent` dep.
+- Move `@bedrock/turnstile` into `peerDependencies`.
 
 ## 7.1.0 - 2023-10-18
 
