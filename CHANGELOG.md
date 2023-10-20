@@ -10,7 +10,6 @@
 ### Fixed
 - Remove unused `@digitalbazaar/http-client@4.0` dep.
 
-
 ## 7.1.1 - 2023-10-20
 
 ### Fixed
