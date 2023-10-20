@@ -2,13 +2,13 @@
 
 ## 8.0.0 - 2023-10-TBD
 
-### Added
+### Changed
 - **BREAKING**: Add `engines` field in `package.json`, drops support for
   Node.js < 18.
-- Add missing dep `uuid@9.0.1` in test dep.
 
 ### Fixed
 - Remove unused `@digitalbazaar/http-client@4.0` dep.
+- Add missing dep `uuid@9.0.1` in test dep.
 
 ## 7.1.1 - 2023-10-20
 
