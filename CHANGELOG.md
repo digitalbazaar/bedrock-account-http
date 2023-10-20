@@ -3,7 +3,8 @@
 ## 8.0.0 - 2023-10-TBD
 
 ### Added
-- **BREAKING**: Add `engines` in `package.json`, drops support for Node.js < 18.
+- **BREAKING**: Add `engines` field in `package.json`, drops support for
+  Node.js < 18.
 - Add missing dep `uuid@9.0.1` in test dep.
 
 ### Fixed
