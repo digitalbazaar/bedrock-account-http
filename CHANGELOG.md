@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 7.1.1 - 2023-10-xx
+## 7.1.1 - 2023-10-20
 
 ### Fixed
 - Remove unused `@bedrock/https-agent` dep.
