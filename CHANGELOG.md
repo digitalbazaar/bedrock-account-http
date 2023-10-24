@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 7.1.2 - 2023-10-xx
+## 7.1.2 - 2023-10-24
 
 ### Fixed
 - Remove `turnstile` related changes released in `7.1.0` and `7.1.1`. Due to
