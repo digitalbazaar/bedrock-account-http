@@ -1,5 +1,12 @@
 # bedrock-account-http ChangeLog
 
+## 7.1.2 - 2023-10-xx
+
+### Fixed
+- Remove `turnstile` related changes released in `7.1.0` and `7.1.1`. Due to
+  a Node.js 18+ requirement in related dependencies, this functionality must
+  be added in a future major, breaking v8.x release.
+
 ## 7.1.1 - 2023-10-20
 
 ### Fixed
