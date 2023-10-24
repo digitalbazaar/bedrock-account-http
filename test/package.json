@@ -31,11 +31,13 @@
     "@bedrock/passport": "^11.0.0",
     "@bedrock/server": "^5.0.0",
     "@bedrock/test": "^8.0.0",
+    "@bedrock/turnstile": "^1.0.2",
     "@bedrock/validation": "^7.0.0",
     "apisauce": "^2.0.0",
     "c8": "^7.11.0",
     "cross-env": "^7.0.2",
-    "sinon": "^9.0.2"
+    "sinon": "^17.0.0",
+    "uuid": "^9.0.0"
   },
   "c8": {
     "excludeNodeModules": false,

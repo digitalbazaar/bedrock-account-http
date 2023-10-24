@@ -27,6 +27,7 @@
   "dependencies": {
     "express-query-boolean": "^2.0.0",
     "express-query-int": "^3.0.0",
+    "forwarded": "^0.2.0",
     "uuid": "^9.0.0"
   },
   "peerDependencies": {
@@ -34,15 +35,19 @@
     "@bedrock/core": "^6.0.0",
     "@bedrock/express": "^8.0.0",
     "@bedrock/passport": "^11.0.0",
+    "@bedrock/turnstile": "^1.0.2",
     "@bedrock/validation": "^7.0.0"
   },
   "directories": {
     "lib": "./lib"
   },
   "devDependencies": {
-    "eslint": "^8.32.0",
-    "eslint-config-digitalbazaar": "^4.2.0",
-    "eslint-plugin-jsdoc": "^39.6.8",
+    "eslint": "^8.52.0",
+    "eslint-config-digitalbazaar": "^5.0.1",
+    "eslint-plugin-jsdoc": "^46.8.2",
     "jsdoc-to-markdown": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
