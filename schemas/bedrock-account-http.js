@@ -10,21 +10,7 @@ export function create() {
     required: ['email'],
     additionalProperties: false,
     properties: {
-      email: schemas.email(),
-      authorization: {
-        type: 'object',
-        additionalProperties: false,
-        required: ['type', 'token'],
-        properties: {
-          type: {
-            type: 'string',
-            enum: ['turnstile']
-          },
-          token: {
-            type: 'string'
-          }
-        }
-      }
+      email: schemas.email()
     }
   };
 }
