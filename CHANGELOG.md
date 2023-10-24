@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 8.0.0 - 2023-10-xx
+## 8.0.0 - 2023-10-24
 
 ### Added
 - Add optional `authorization` value when registering an account and
