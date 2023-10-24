@@ -2,14 +2,15 @@
 
 ## 8.0.0 - 2023-10-xx
 
-### Changed
-- **BREAKING**: Drop support for Node.js < 18.
-- Add `@bedrock/turnstile` dep. This module requires Node.js 18+.
-
 ### Added
 - Add optional `authorization` value when registering an account and
   define first instance of it that uses a captcha via the Cloudflare
   Turnstile service.
+
+### Changed
+- **BREAKING**: Drop support for Node.js < 18.
+- Add `@bedrock/turnstile` peer dependency. This module requires Node.js 18+ and
+  must be installed by top-level applications.
 
 ## 7.1.2 - 2023-10-24
 
