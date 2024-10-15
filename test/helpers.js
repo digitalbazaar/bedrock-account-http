@@ -1,13 +1,13 @@
 /*!
- * Copyright (c) 2019-2023 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2024 Digital Bazaar, Inc. All rights reserved.
  */
 import * as brAccount from '@bedrock/account';
 import * as database from '@bedrock/mongodb';
-import {v4 as uuid} from 'uuid';
+import {randomUUID} from 'node:crypto';
 
 export function createAccount(email) {
   const newAccount = {
-    id: 'urn:uuid:' + uuid(),
+    id: 'urn:uuid:' + randomUUID(),
     email
   };
   return newAccount;
