@@ -1,5 +1,10 @@
 # bedrock-account-http ChangeLog
 
+## 8.1.0 - 2024-10-dd
+
+### Changed
+- Update dependencies.
+
 ## 8.0.0 - 2023-10-24
 
 ### Added
