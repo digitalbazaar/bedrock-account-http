@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2019-2023 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2024 Digital Bazaar, Inc. All rights reserved.
  */
 import * as helpers from '../helpers.js';
 import {_deserializeUser} from '@bedrock/passport';
@@ -8,7 +8,7 @@ import {config} from '@bedrock/core';
 import {create} from 'apisauce';
 import https from 'https';
 import {mockData} from '../mock.data.js';
-import {v4 as uuid} from 'uuid';
+import {randomUUID} from 'node:crypto';
 
 const emails = {
   alpha: 'alpha@example.com',
@@ -173,7 +173,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
 
   describe('post /:account/status', function() {
     it('should change the status to deleted', async function() {
-      const email = `${uuid()}@digitalbazaar.com`;
+      const email = `${randomUUID()}@digitalbazaar.com`;
       const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
@@ -186,7 +186,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
 
     it('should change the status to disabled', async function() {
-      const email = `${uuid()}@digitalbazaar.com`;
+      const email = `${randomUUID()}@digitalbazaar.com`;
       const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
@@ -199,7 +199,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
 
     it('should keep status at active', async function() {
-      const email = `${uuid()}@digitalbazaar.com`;
+      const email = `${randomUUID()}@digitalbazaar.com`;
       const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
@@ -214,7 +214,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
 
     it('should fail to reactivate disabled account', async function() {
-      const email = `${uuid()}@digitalbazaar.com`;
+      const email = `${randomUUID()}@digitalbazaar.com`;
       const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
@@ -228,7 +228,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
     });
 
     it('should fail to reactivate deleted account', async function() {
-      const email = `${uuid()}@digitalbazaar.com`;
+      const email = `${randomUUID()}@digitalbazaar.com`;
       const {data} = await api.post('/', {email});
       accounts[email] = {account: data, meta: {}};
       const {id} = data;
