@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 8.1.0 - 2024-10-dd
+## 8.1.0 - 2024-10-15
 
 ### Changed
 - Update dependencies.
