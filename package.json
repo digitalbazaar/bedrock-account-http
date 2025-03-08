@@ -44,6 +44,7 @@
     "eslint": "^8.52.0",
     "eslint-config-digitalbazaar": "^5.0.1",
     "eslint-plugin-jsdoc": "^50.4.1",
+    "eslint-plugin-unicorn": "^56.0.1",
     "jsdoc-to-markdown": "^9.0.2"
   },
   "engines": {
