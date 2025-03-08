@@ -1,5 +1,10 @@
 # bedrock-account-http ChangeLog
 
+## 8.1.1 - 20xx-xx-xx
+
+### Changed
+- Add module linting.
+
 ## 8.1.0 - 2024-10-15
 
 ### Changed
