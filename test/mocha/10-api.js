@@ -6,7 +6,7 @@ import {_deserializeUser} from '@bedrock/passport';
 import {config} from '@bedrock/core';
 // apisauce is a wrapper around axios that provides improved error handling
 import {create} from 'apisauce';
-import https from 'https';
+import https from 'node:https';
 import {mockData} from '../mock.data.js';
 import {randomUUID} from 'node:crypto';
 
