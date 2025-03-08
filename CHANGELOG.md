@@ -1,9 +1,19 @@
 # bedrock-account-http ChangeLog
 
-## 8.1.1 - 20xx-xx-xx
+## 9.0.0 - 2025-03-xx
 
 ### Changed
 - Add module linting.
+- Update peer dependencies.
+  - **BREAKING**: `@bedrock/account@10`.
+    - Updated for `@bedrock/mongodb@11`.
+  - `@bedrock/core@6.3.0`.
+  - `@bedrock/express@8.3.1`.
+  - **BREAKING**: `@bedrock/passport@12`.
+    - Updated for `@bedrock/mongodb@11`.
+  - `@bedrock/validation@7.1.1`.
+- Update dev dependencies.
+- Update test dependencies.
 
 ## 8.1.0 - 2024-10-15
 

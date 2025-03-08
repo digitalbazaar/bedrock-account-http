@@ -30,22 +30,21 @@
     "forwarded": "^0.2.0"
   },
   "peerDependencies": {
-    "@bedrock/account": "^9.0.0",
-    "@bedrock/core": "^6.0.0",
-    "@bedrock/express": "^8.0.0",
-    "@bedrock/passport": "^11.0.0",
+    "@bedrock/account": "^10.0.0",
+    "@bedrock/core": "^6.3.0",
+    "@bedrock/express": "^8.3.1",
+    "@bedrock/passport": "^12.0.0",
     "@bedrock/turnstile": "^1.0.2",
-    "@bedrock/validation": "^7.0.0"
+    "@bedrock/validation": "^7.1.1"
   },
   "directories": {
     "lib": "./lib"
   },
   "devDependencies": {
-    "eslint": "^8.52.0",
-    "eslint-config-digitalbazaar": "^5.0.1",
-    "eslint-plugin-jsdoc": "^50.4.1",
-    "eslint-plugin-unicorn": "^56.0.1",
-    "jsdoc-to-markdown": "^9.0.2"
+    "eslint": "^8.57.1",
+    "eslint-config-digitalbazaar": "^5.2.0",
+    "eslint-plugin-jsdoc": "^50.6.3",
+    "eslint-plugin-unicorn": "^56.0.1"
   },
   "engines": {
     "node": ">=18"
