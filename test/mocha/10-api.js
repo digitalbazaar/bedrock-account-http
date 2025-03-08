@@ -130,7 +130,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
           {email: 'newUser@digitalbazaar.com'});
         result.status.should.equal(400);
         result.data.type.should.equal('ValidationError');
-        result.data.message.should.equal(`A validation error occured in the ` +
+        result.data.message.should.equal(`A validation error occurred in the ` +
           `'Create Account' validator.`);
         result.data.details.httpStatusCode.should.equal(400);
       });
