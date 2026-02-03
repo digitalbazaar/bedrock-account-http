@@ -29,6 +29,22 @@ export function create() {
   };
 }
 
+export function createMeter() {
+  return {
+    title: 'Create Meter',
+    type: 'object',
+    required: ['action', 'productIds'],
+    additionalProperties: false,
+    properties: {
+      action: {type: 'string'},
+      productIds: {
+        type: 'array',
+        items: {type: 'string'}
+      }
+    }
+  };
+}
+
 export function get() {
   return {
     title: 'Get Accounts',
