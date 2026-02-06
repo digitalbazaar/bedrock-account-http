@@ -32,14 +32,29 @@ export function create() {
 export function createMeter() {
   return {
     title: 'Create Meter',
+    description: 'Schema for endpoint to create a meter',
     type: 'object',
-    required: ['action', 'productIds'],
+    required: ['meter'],
     additionalProperties: false,
     properties: {
-      action: {type: 'string'},
-      productIds: {
-        type: 'array',
-        items: {type: 'string'}
+      meter: {
+        type: 'object',
+        required: ['product', 'controller'],
+        additionalProperties: false,
+        properties: {
+          controller: {
+            type: 'string',
+          },
+          product: {
+            type: 'object',
+            required: ['id'],
+            properties: {
+              id: {
+                type: 'string'
+              }
+            }
+          }
+        }
       }
     }
   };
