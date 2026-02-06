@@ -4,7 +4,7 @@
 
 ### Added
 - Add endpoint to check account ID and product IDs against meter creation policy
-bedrock configuration.
+  in bedrock configuration.
 
 ## 9.0.0 - 2025-03-07
 
