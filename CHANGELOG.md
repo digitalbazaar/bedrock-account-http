@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 9.1.0 - 2026-02-dd
+## 9.1.0 - 2026-02-09
 
 ### Added
 - Add endpoint to check account ID and product IDs against meter creation policy
