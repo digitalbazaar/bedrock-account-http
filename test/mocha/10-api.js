@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2019-2024 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2026 Digital Bazaar, Inc. All rights reserved.
  */
 import * as helpers from '../helpers.js';
 import {_deserializeUser} from '@bedrock/passport';
@@ -119,6 +119,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const result2 = await api.post('/', email);
 
       result1.status.should.equal(201);
+      result2.status.should.equal(409);
       result2.data.type.should.equal('DuplicateError');
       result2.data.message.should.equal('Duplicate account.');
       result2.data.details.httpStatusCode.should.equal(409);
@@ -134,6 +135,110 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
           `'Create Account' validator.`);
         result.data.details.httpStatusCode.should.equal(400);
       });
+  });
+
+  describe('post / with a phone number', function() {
+    it('should create an account from a phone number alone',
+      async function() {
+        const phoneNumber = '+15550100001';
+        const result = await api.post('/', {phoneNumber});
+        result.status.should.equal(201);
+
+        // the response body is the request echoed back, so confirm the
+        // account is actually findable by the number
+        const found = await api.get(
+          `/?phoneNumber=${encodeURIComponent(phoneNumber)}&exists=true`);
+        found.status.should.equal(200);
+      });
+
+    it('should create an account with both identifiers', async function() {
+      const email = 'both@digitalbazaar.com';
+      const phoneNumber = '+15550100002';
+      const result = await api.post('/', {email, phoneNumber});
+      result.status.should.equal(201);
+
+      const byEmail = await api.get(
+        `/?email=${encodeURIComponent(email)}&exists=true`);
+      byEmail.status.should.equal(200);
+      const byPhone = await api.get(
+        `/?phoneNumber=${encodeURIComponent(phoneNumber)}&exists=true`);
+      byPhone.status.should.equal(200);
+    });
+
+    it('should return 409 for accounts with the same phone number',
+      async function() {
+        const body = {phoneNumber: '+15550100003'};
+        const result1 = await api.post('/', body);
+        const result2 = await api.post('/', body);
+        result1.status.should.equal(201);
+        result2.status.should.equal(409);
+        result2.data.type.should.equal('DuplicateError');
+        // pinned to the phone index: a collision on any unique field would
+        // otherwise satisfy this
+        result2.data.details.uniqueField.should.equal('phoneNumber');
+      });
+
+    it('should reject a phone number that is not E.164', async function() {
+      for(const phoneNumber of ['5550100004', '555 010 0004', '+1 555-0100']) {
+        const result = await api.post('/', {phoneNumber});
+        result.status.should.equal(400, `for ${phoneNumber}`);
+        result.data.type.should.equal('ValidationError', `for ${phoneNumber}`);
+        /* Name the field that failed. A bare ValidationError is also what a
+        pattern matching nothing produces, which would leave this green while
+        the E.164 rule had stopped meaning anything. */
+        const paths = (result.data.details?.errors ?? [])
+          .map(e => e.details?.path ?? e.details?.instancePath);
+        paths.should.include('.phoneNumber', `for ${phoneNumber}`);
+      }
+      // a normalized number is accepted, so the rule is not rejecting all
+      const ok = await api.post('/', {phoneNumber: '+15550100005'});
+      ok.status.should.equal(201);
+    });
+
+    it('should return 400 when neither identifier is given',
+      async function() {
+        const result = await api.post('/', {});
+        result.status.should.equal(400);
+        result.data.type.should.equal('ValidationError');
+        /* Distinguish "one of email or phoneNumber" from the older
+        "email is required": under the latter a phone-only body would fail,
+        so assert it is accepted. */
+        const phoneOnly = await api.post('/', {phoneNumber: '+15550100006'});
+        phoneOnly.status.should.equal(201);
+      });
+  });
+
+  describe('get / by phone number', function() {
+    /* The leading `+` of an E.164 number has to be percent-encoded in a query
+    string, where a bare `+` means a space. These call the encoded form on
+    purpose, and the last case pins the consequence of getting it wrong. */
+    it('should confirm existence by phone number', async function() {
+      const phoneNumber = '+15550100010';
+      await api.post('/', {phoneNumber});
+      const query =
+        `?phoneNumber=${encodeURIComponent(phoneNumber)}&exists=true`;
+      const result = await api.get(`/${query}`);
+      result.status.should.equal(200);
+    });
+
+    it('should 404 for a phone number with no account', async function() {
+      const phoneNumber = encodeURIComponent('+15550100099');
+      const result = await api.get(`/?phoneNumber=${phoneNumber}&exists=true`);
+      result.status.should.equal(404);
+    });
+
+    it('should reject an unencoded plus, which arrives as a space',
+      async function() {
+        const result = await api.get('/?phoneNumber=+15550100010&exists=true');
+        result.status.should.equal(400);
+        result.data.type.should.equal('ValidationError');
+        const errors = result.data.details?.errors ?? [];
+        const paths = errors.map(e => e.details?.path);
+        paths.should.include('.phoneNumber');
+        const [{details}] = result.data.details.errors;
+        details.value.should.equal('***MASKED***');
+      });
+
   });
 
   describe('get /:account', function() {
