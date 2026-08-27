@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2019-2023 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2026 Digital Bazaar, Inc. All rights reserved.
  */
 import {schemas} from '@bedrock/validation';
 
@@ -7,10 +7,12 @@ export function create() {
   return {
     title: 'Create Account',
     type: 'object',
-    required: ['email'],
+    // an account is identified by an email address, a phone number, or both
+    anyOf: [{required: ['email']}, {required: ['phoneNumber']}],
     additionalProperties: false,
     properties: {
       email: schemas.email(),
+      phoneNumber: schemas.phoneNumber(),
       authorization: {
         type: 'object',
         additionalProperties: false,
@@ -64,10 +66,13 @@ export function get() {
   return {
     title: 'Get Accounts',
     type: 'object',
-    required: ['email'],
+    // a lookup resolves one identifier; naming both is refused here rather
+    // than reaching the account module, which throws on the pair
+    oneOf: [{required: ['email']}, {required: ['phoneNumber']}],
     additionalProperties: false,
     properties: {
       email: schemas.email(),
+      phoneNumber: schemas.phoneNumber(),
       exists: {
         type: 'boolean'
       },
@@ -94,14 +99,16 @@ export function update() {
       account: {
         title: 'Account',
         type: 'object',
-        required: ['id', 'email'],
+        required: ['id'],
+        anyOf: [{required: ['email']}, {required: ['phoneNumber']}],
         additionalProperties: true,
         properties: {
           id: {
             type: 'string',
             minLength: 0
           },
-          email: schemas.email()
+          email: schemas.email(),
+          phoneNumber: schemas.phoneNumber()
         }
       },
       sequence: {

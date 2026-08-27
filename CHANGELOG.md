@@ -1,5 +1,30 @@
 # bedrock-account-http ChangeLog
 
+## 9.2.0 - 20xx-xx-xx
+
+### Added
+- Accept `phoneNumber` as an account identifier on `POST /accounts`, on the
+  `GET /accounts` existence check, on the authenticated `GET /accounts`
+  lookup, and on `POST /accounts/:account`. An account may carry an email
+  address, a phone number, or both. Phone numbers must be in E.164 form on
+  every write path; the caller normalizes, so only one form of a given number
+  can reach storage and uniqueness means what it says. The format comes from
+  `@bedrock/validation`'s `phoneNumber` schema.
+- `GET /accounts` rejects a request naming both `email` and `phoneNumber`
+  with a 400. A lookup resolves one identifier at a time.
+
+### Changed
+- Require `@bedrock/account@^10.1.0` for the `phoneNumber` identifier and
+  `@bedrock/validation@^7.3.0` for the `phoneNumber` schema. Earlier versions
+  of either fail at load time.
+
+### Fixed
+- The query integer parser now only coerces `limit`. It previously ran
+  `parseInt` over every query parameter, so a value beginning with digits was
+  truncated to a number before validation saw it: `007@example.com` became
+  `7`, and `+15551234567` became the integer 15551234567, losing the leading
+  `+` and the string type.
+
 ## 9.1.0 - 2026-02-09
 
 ### Added

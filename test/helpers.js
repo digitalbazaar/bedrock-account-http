@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2019-2024 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2026 Digital Bazaar, Inc. All rights reserved.
  */
 import * as brAccount from '@bedrock/account';
 import * as database from '@bedrock/mongodb';
@@ -20,8 +20,12 @@ export async function prepareDatabase(mockData) {
 }
 
 // called by prepareDatabase
+function accountCollections() {
+  return ['account', ...brAccount.UNIQUE_FIELDS.map(f => `account-${f}`)];
+}
+
 export async function removeCollections(
-  collectionNames = ['account', 'account-email']) {
+  collectionNames = accountCollections()) {
   await database.openCollections(collectionNames);
   for(const collectionName of collectionNames) {
     await database.collections[collectionName].deleteMany({});
