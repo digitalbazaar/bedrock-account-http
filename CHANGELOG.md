@@ -24,6 +24,8 @@
   truncated to a number before validation saw it: `007@example.com` became
   `7`, and `+15551234567` became the integer 15551234567, losing the leading
   `+` and the string type.
+- A `limit` that is not wholly a string of digits is rejected with a 400. It
+  was parsed with `parseInt`, so `1garbage` was read as `1` and `2.5` as `2`.
 
 ## 9.1.0 - 2026-02-09
 
