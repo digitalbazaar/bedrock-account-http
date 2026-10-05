@@ -466,6 +466,25 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       validationError(result, 'Get Accounts', /additional/i);
     });
 
+    it('should accept a whole-string integer limit', async function() {
+      const result = await api.get(
+        '/?email=alpha@example.com&exists=true&limit=5');
+      result.status.should.equal(200);
+    });
+
+    it('should reject a limit that is not wholly a decimal integer',
+      async function() {
+        const limits = ['1garbage', '2.5', '', '0', '1e2', '0x10', '%205%20'];
+        for(const limit of limits) {
+          const result = await api.get(
+            `/?email=alpha@example.com&exists=true&limit=${limit}`);
+          result.status.should.equal(400, `for limit=${limit}`);
+          result.data.type.should.equal('ValidationError');
+          const paths = result.data.details.errors.map(e => e.details.path);
+          paths.should.include('.limit', `for limit=${limit}`);
+        }
+      });
+
     it('should return no results for non-matching account', async function() {
       const email = 'multi@example.com';
       stubPassportStub(emails.alpha);
