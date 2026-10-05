@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2019-2024 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2026 Digital Bazaar, Inc. All rights reserved.
  */
 import * as helpers from '../helpers.js';
 import {_deserializeUser} from '@bedrock/passport';
@@ -119,6 +119,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const result2 = await api.post('/', email);
 
       result1.status.should.equal(201);
+      result2.status.should.equal(409);
       result2.data.type.should.equal('DuplicateError');
       result2.data.message.should.equal('Duplicate account.');
       result2.data.details.httpStatusCode.should.equal(409);
@@ -134,6 +135,110 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
           `'Create Account' validator.`);
         result.data.details.httpStatusCode.should.equal(400);
       });
+  });
+
+  describe('post / with a telephone number', function() {
+    it('should create an account from a telephone number alone',
+      async function() {
+        const telephone = '+15550100001';
+        const result = await api.post('/', {telephone});
+        result.status.should.equal(201);
+
+        // the response body is the request echoed back, so confirm the
+        // account is actually findable by the number
+        const found = await api.get(
+          `/?telephone=${encodeURIComponent(telephone)}&exists=true`);
+        found.status.should.equal(200);
+      });
+
+    it('should create an account with both identifiers', async function() {
+      const email = 'both@digitalbazaar.com';
+      const telephone = '+15550100002';
+      const result = await api.post('/', {email, telephone});
+      result.status.should.equal(201);
+
+      const byEmail = await api.get(
+        `/?email=${encodeURIComponent(email)}&exists=true`);
+      byEmail.status.should.equal(200);
+      const byTelephone = await api.get(
+        `/?telephone=${encodeURIComponent(telephone)}&exists=true`);
+      byTelephone.status.should.equal(200);
+    });
+
+    it('should return 409 for accounts with the same telephone number',
+      async function() {
+        const body = {telephone: '+15550100003'};
+        const result1 = await api.post('/', body);
+        const result2 = await api.post('/', body);
+        result1.status.should.equal(201);
+        result2.status.should.equal(409);
+        result2.data.type.should.equal('DuplicateError');
+        // pinned to the telephone index: a collision on any unique field would
+        // otherwise satisfy this
+        result2.data.details.uniqueField.should.equal('telephone');
+      });
+
+    it('should reject a telephone number that is not E.164', async function() {
+      for(const telephone of ['5550100004', '555 010 0004', '+1 555-0100']) {
+        const result = await api.post('/', {telephone});
+        result.status.should.equal(400, `for ${telephone}`);
+        result.data.type.should.equal('ValidationError', `for ${telephone}`);
+        /* Name the field that failed. A bare ValidationError is also what a
+        pattern matching nothing produces, which would leave this green while
+        the E.164 rule had stopped meaning anything. */
+        const paths = (result.data.details?.errors ?? [])
+          .map(e => e.details?.path ?? e.details?.instancePath);
+        paths.should.include('.telephone', `for ${telephone}`);
+      }
+      // a normalized number is accepted, so the rule is not rejecting all
+      const ok = await api.post('/', {telephone: '+15550100005'});
+      ok.status.should.equal(201);
+    });
+
+    it('should return 400 when neither identifier is given',
+      async function() {
+        const result = await api.post('/', {});
+        result.status.should.equal(400);
+        result.data.type.should.equal('ValidationError');
+        /* Distinguish "one of email or telephone" from the older
+        "email is required": under the latter a telephone-only body would fail,
+        so assert it is accepted. */
+        const telephoneOnly = await api.post('/', {telephone: '+15550100006'});
+        telephoneOnly.status.should.equal(201);
+      });
+  });
+
+  describe('get / by telephone number', function() {
+    /* The leading `+` of an E.164 number has to be percent-encoded in a query
+    string, where a bare `+` means a space. These call the encoded form on
+    purpose, and the last case pins the consequence of getting it wrong. */
+    it('should confirm existence by telephone number', async function() {
+      const telephone = '+15550100010';
+      await api.post('/', {telephone});
+      const query =
+        `?telephone=${encodeURIComponent(telephone)}&exists=true`;
+      const result = await api.get(`/${query}`);
+      result.status.should.equal(200);
+    });
+
+    it('should 404 for a telephone number with no account', async function() {
+      const telephone = encodeURIComponent('+15550100099');
+      const result = await api.get(`/?telephone=${telephone}&exists=true`);
+      result.status.should.equal(404);
+    });
+
+    it('should reject an unencoded plus, which arrives as a space',
+      async function() {
+        const result = await api.get('/?telephone=+15550100010&exists=true');
+        result.status.should.equal(400);
+        result.data.type.should.equal('ValidationError');
+        const errors = result.data.details?.errors ?? [];
+        const paths = errors.map(e => e.details?.path);
+        paths.should.include('.telephone');
+        const [{details}] = result.data.details.errors;
+        details.value.should.equal('***MASKED***');
+      });
+
   });
 
   describe('get /:account', function() {
@@ -360,6 +465,25 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const result = await api.get('/', {email, extra: true});
       validationError(result, 'Get Accounts', /additional/i);
     });
+
+    it('should accept a whole-string integer limit', async function() {
+      const result = await api.get(
+        '/?email=alpha@example.com&exists=true&limit=5');
+      result.status.should.equal(200);
+    });
+
+    it('should reject a limit that is not wholly a decimal integer',
+      async function() {
+        const limits = ['1garbage', '2.5', '', '0', '1e2', '0x10', '%205%20'];
+        for(const limit of limits) {
+          const result = await api.get(
+            `/?email=alpha@example.com&exists=true&limit=${limit}`);
+          result.status.should.equal(400, `for limit=${limit}`);
+          result.data.type.should.equal('ValidationError');
+          const paths = result.data.details.errors.map(e => e.details.path);
+          paths.should.include('.limit', `for limit=${limit}`);
+        }
+      });
 
     it('should return no results for non-matching account', async function() {
       const email = 'multi@example.com';
