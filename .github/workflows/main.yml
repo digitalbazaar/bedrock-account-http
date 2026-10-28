@@ -18,9 +18,11 @@ jobs:
     - run: npm install
     - name: Run eslint
       run: npm run lint
+  # database jobs avoid MongoDB 8's Linux 6.19 startup failure
+  # see: https://jira.mongodb.org/browse/SERVER-121912
   test-node:
     needs: [lint]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     services:
       mongodb:
@@ -46,7 +48,7 @@ jobs:
         npm test
   coverage:
     needs: [test-node]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     services:
       mongodb:
