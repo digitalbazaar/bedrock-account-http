@@ -4,7 +4,6 @@
   },
   "globals": {
     "assertNoError": true,
-    "should": true,
-    "passportStub": true
+    "should": true
   }
 }

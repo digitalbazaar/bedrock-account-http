@@ -3,6 +3,9 @@
  */
 import * as brAccount from '@bedrock/account';
 import * as database from '@bedrock/mongodb';
+import {config} from '@bedrock/core';
+import {httpClient} from '@digitalbazaar/http-client';
+import {httpsAgent} from '@bedrock/https-agent';
 import {randomUUID} from 'node:crypto';
 
 export function createAccount(email) {
@@ -48,4 +51,20 @@ async function insertTestData(mockData) {
       throw e;
     }
   }
+}
+
+export async function requestAccessToken({
+  scope = 'write:/accounts', clientName = 'registration'
+} = {}) {
+  const {clients, routes} = config['basic-authz-server'].authorization.oauth2;
+  const {id} = clients[clientName];
+  const credentials = Buffer.from(`${id}:${id}`).toString('base64');
+  const body = new URLSearchParams({grant_type: 'client_credentials', scope});
+  const {data: {access_token: accessToken}} = await httpClient.post(
+    `${config.server.baseUri}${routes.token}`, {
+      agent: httpsAgent,
+      body,
+      headers: {authorization: `Basic ${credentials}`}
+    });
+  return accessToken;
 }

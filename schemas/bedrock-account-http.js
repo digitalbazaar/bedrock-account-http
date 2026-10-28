@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2019-2023 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2026 Digital Bazaar, Inc. All rights reserved.
  */
 import {schemas} from '@bedrock/validation';
 
@@ -14,16 +14,23 @@ export function create() {
       authorization: {
         type: 'object',
         additionalProperties: false,
-        required: ['type', 'token'],
+        required: ['type'],
         properties: {
           type: {
             type: 'string',
-            enum: ['turnstile']
+            enum: ['turnstile', 'oauth2']
           },
           token: {
             type: 'string'
           }
-        }
+        },
+        oneOf: [{
+          properties: {type: {const: 'turnstile'}},
+          required: ['token']
+        }, {
+          properties: {type: {const: 'oauth2'}},
+          not: {required: ['token']}
+        }]
       }
     }
   };

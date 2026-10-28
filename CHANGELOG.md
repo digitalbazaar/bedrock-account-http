@@ -1,5 +1,13 @@
 # bedrock-account-http ChangeLog
 
+## 9.2.0 - 2026-xx-xx
+
+### Added
+- Allow multiple registration authorization methods as alternatives.
+- Add OAuth2 authorization for account registration.
+- Add required peer dependency `@bedrock/oauth2-verifier@^2.3.1`.
+- Record the successful registration method in account metadata.
+
 ## 9.1.0 - 2026-02-09
 
 ### Added
