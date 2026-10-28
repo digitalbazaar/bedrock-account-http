@@ -1,14 +1,16 @@
 /*!
  * Copyright (c) 2019-2024 Digital Bazaar, Inc. All rights reserved.
  */
+import * as brAccount from '@bedrock/account';
 import * as helpers from '../helpers.js';
-import {_deserializeUser} from '@bedrock/passport';
+import {_deserializeUser, passport} from '@bedrock/passport';
 import {config} from '@bedrock/core';
 // apisauce is a wrapper around axios that provides improved error handling
 import {create} from 'apisauce';
 import https from 'node:https';
 import {mockData} from '../mock.data.js';
 import {randomUUID} from 'node:crypto';
+import sinon from 'sinon';
 
 const emails = {
   alpha: 'alpha@example.com',
@@ -48,28 +50,29 @@ function stubPassportStub(email) {
   passportStubSettings.email = email;
 }
 
-passportStub.callsFake((strategyName, options, callback) => {
-  // eslint-disable-next-line no-unused-vars
-  return async function(req, res, next) {
-    req.isAuthenticated = req.isAuthenticated || (() => !!req.user);
-    let user = false;
-    try {
-      const {email} = passportStubSettings;
-      if(email) {
-        user = await _deserializeUser({
-          accountId: accounts[email].account.id
-        });
-      }
-    } catch(e) {
-      return callback(e);
-    }
-    callback(null, user);
-  };
-});
-
 describe('bedrock-account-http', function bedrockAccountHttp() {
+  let passportStub;
   before(async function setup() {
     await helpers.prepareDatabase(mockData);
+    passportStub = sinon.stub(passport, 'authenticate');
+    passportStub.callsFake((strategyName, options, callback) => {
+      // eslint-disable-next-line no-unused-vars
+      return async function(req, res, next) {
+        req.isAuthenticated = req.isAuthenticated || (() => !!req.user);
+        let user = false;
+        try {
+          const {email} = passportStubSettings;
+          if(email) {
+            user = await _deserializeUser({
+              accountId: accounts[email].account.id
+            });
+          }
+        } catch(e) {
+          return callback(e);
+        }
+        callback(null, user);
+      };
+    });
     accounts = {...mockData.accounts};
     api = create({
       baseURL,
@@ -78,6 +81,7 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
   });
   afterEach(function() {
     stubPassportStub(null);
+    config['account-http'].registration.authorizationRequired = false;
   });
   after(async function() {
     passportStub.restore();
@@ -94,12 +98,15 @@ describe('bedrock-account-http', function bedrockAccountHttp() {
       const email = {email: 'auth@digitalbazaar.com', authorization};
       const result = await api.post('/', email);
       result.status.should.equal(201);
-      config['account-http'].registration.authorizationRequired = false;
+      const {meta} = await brAccount.get({id: result.data.id});
+      meta.registration.should.deep.equal({type: 'turnstile'});
     });
     it('should create account without authorization', async function() {
       const email = {email: 'noauth@digitalbazaar.com'};
       const result = await api.post('/', email);
       result.status.should.equal(201);
+      const {meta} = await brAccount.get({id: result.data.id});
+      meta.should.not.have.property('registration');
     });
     it('should return 400 if there is no email', async function() {
       const result = await api.post('/');
