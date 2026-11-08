@@ -1,6 +1,6 @@
 # bedrock-account-http ChangeLog
 
-## 9.2.0 - 2026-mm-dd
+## 9.2.0 - 2026-11-07
 
 ### Added
 - Accept `telephone` as an account identifier on `POST /accounts`, on the
