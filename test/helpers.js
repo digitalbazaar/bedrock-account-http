@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2019-2026 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2019-2026 Digital Bazaar, Inc.
  */
 import * as brAccount from '@bedrock/account';
 import * as database from '@bedrock/mongodb';
@@ -21,7 +21,7 @@ export async function prepareDatabase(mockData) {
 
 // called by prepareDatabase
 function accountCollections() {
-  return ['account', ...brAccount.UNIQUE_FIELDS.map(f => `account-${f}`)];
+  return ['account', ...brAccount._UNIQUE_FIELDS.map(f => `account-${f}`)];
 }
 
 export async function removeCollections(
