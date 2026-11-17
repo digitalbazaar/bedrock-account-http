@@ -1,5 +1,11 @@
 # bedrock-account-http ChangeLog
 
+## 9.3.0 - TBD
+
+### Added
+- Allow meter creation to use account policy when enabled and no per-account
+  override is configured.
+
 ## 9.2.0 - 2026-11-07
 
 ### Added
