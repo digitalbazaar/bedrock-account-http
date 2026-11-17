@@ -3,8 +3,8 @@
 ## 9.3.0 - TBD
 
 ### Added
-- Allow meter creation to use account policy when enabled and no per-account
-  override is configured.
+- Allow meter creation to use account policy as the base for per-account
+  overrides.
 
 ## 9.2.0 - 2026-11-07
 
