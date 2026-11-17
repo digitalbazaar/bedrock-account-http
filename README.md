@@ -8,6 +8,6 @@ grants for specific account IDs. Set `config['account-http'].useAccountPolicy`
 to `true` to use meter grants from `@bedrock/account` as the base. This option
 requires `@bedrock/account` 10.2.0 or later.
 
-Each product grant in the per-account map takes precedence, including explicit
-denials. With core policy enabled, products omitted from the map use the core
-grant. By default, the per-account map supplies all grants.
+Each top-level section in the override replaces the corresponding core
+section. A `meters` override supplies all meter grants for the account.
+If the override omits `meters`, the core grants apply when enabled.
