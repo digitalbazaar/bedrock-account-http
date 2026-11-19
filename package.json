@@ -30,7 +30,7 @@
     "forwarded": "^0.2.0"
   },
   "peerDependencies": {
-    "@bedrock/account": "^10.1.0",
+    "@bedrock/account": "github:digitalbazaar/bedrock-account#account-policy",
     "@bedrock/core": "^6.3.0",
     "@bedrock/express": "^8.3.1",
     "@bedrock/passport": "^12.0.0",

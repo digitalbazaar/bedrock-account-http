@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-account-http",
   "dependencies": {
-    "@bedrock/account": "^10.1.0",
+    "@bedrock/account": "github:digitalbazaar/bedrock-account#account-policy",
     "@bedrock/account-http": "file:..",
     "@bedrock/core": "^6.3.0",
     "@bedrock/express": "^8.3.1",
