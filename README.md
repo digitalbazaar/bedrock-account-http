@@ -1,8 +1,28 @@
 # bedrock-account-http
 HTTP APIs for Bedrock User Accounts
 
-## Meter creation policies
+## Account policy
 
 Set `config['account-http'].useAccountPolicy` to `true` to use the account's
-meter grants. If a per-account override includes `meters`, it supplies all meter
-grants for that account.
+policy. Each section in a per-account override replaces the matching section
+of that policy.
+
+The meter creation route checks `meters.create` for the requested product ID.
+The commented `accounts` section illustrates a possible future policy.
+
+```js
+config['account-http'].accountPolicies = {
+  '<accountId>': {
+    // Future example:
+    // accounts: {
+    //   create: {},
+    //   update: {}
+    // },
+    meters: {
+      create: {
+        '<productId>': true
+      }
+    }
+  }
+};
+```
